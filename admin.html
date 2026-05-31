@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Gawang Pinas</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .admin-header h1 {
+      color: var(--primary);
+    }
+    .btn-add {
+      background: var(--primary);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn-add:hover {
+      background: var(--primary-dark);
+    }
+    .products-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .products-table th,
+    .products-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .products-table th {
+      background: var(--bg-light);
+      font-weight: 600;
+    }
+    .products-table img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    .btn-edit {
+      background: #3498db;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    .btn-delete {
+      background: #e74c3c;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+    .modal-overlay.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .product-modal {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .btn-submit {
+      background: var(--primary);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+    .btn-submit:hover {
+      background: var(--primary-dark);
+    }
+    .preview-image {
+      max-width: 100%;
+      max-height: 200px;
+      margin-top: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+    .preview-image.active {
+      display: block;
+    }
+    .message {
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .message.active {
+      display: block;
+    }
+    .login-overlay {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-overlay.hidden {
+      display: none;
+    }
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .login-box h2 {
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .login-box button:hover {
+      background: var(--primary-dark);
+    }
+    .login-error {
+      color: #e74c3c;
+      margin-top: 10px;
+      display: none;
+    }
+    .login-error.active {
+      display: block;
+    }
+    .admin-content {
+      display: none;
+    }
+    .admin-content.active {
+      display: block;
+    }
+    .help-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--primary);
+    }
+    .help-section h3 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+    .help-section ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    .help-section li {
+      margin: 5px 0;
+    }
+    .help-section code {
+      background: #e9ecef;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+      <h2><i class="fas fa-lock"></i> Admin Login</h2>
+      <input type="password" id="adminPassword" placeholder="Enter admin password">
+      <button onclick="checkLogin()">Login</button>
+      <div class="login-error" id="loginError">Incorrect password</div>
+    </div>
+  </div>
+
+  <div class="admin-container admin-content" id="adminContent">
+    <div class="admin-header">
+      <h1>Admin Panel</h1>
+      <div>
+        <button class="btn-add" onclick="openAddModal()" style="color:lime">
+          <i class="fas fa-plus"></i> Add New Product
+        </button>
+        <button class="btn-add" onclick="logout()" style="background: #e74c3c; margin-left: 10px;">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <h3><i class="fas fa-info-circle"></i> Quick Guide</h3>
+      <ul>
+        <li><strong>Add Product:</strong> Click "Add New Product" to upload a new product with image</li>
+        <li><strong>Edit Product:</strong> Click "Edit" to modify product details (image is optional)</li>
+        <li><strong>Delete Product:</strong> Click "Delete" to remove a product (also deletes the image file)</li>
+        <li><strong>Tag Class:</strong> Used for styling - choose: <code>home</code>, <code>fashion</code>, <code>food</code>, or <code>decor</code></li>
+        <li><strong>Sector:</strong> Category for filtering - choose: <code>Home Goods</code>, <code>Apparel</code>, <code>Pantry Items</code>, or <code>Decor / Handicrafts</code></li>
+        <li><strong>Images:</strong> Uploaded to <code>uploads/products/</code> folder</li>
+      </ul>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>Origin</th>
+          <th>Category</th>
+          <th>Sector</th>
+          <th>Votes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="productsTableBody">
+        <!-- Products will be loaded here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add/Edit Product Modal -->
+  <div class="modal-overlay" id="productModal">
+    <div class="product-modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Product</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="productForm">
+        <input type="hidden" id="productId">
+        
+        <div class="form-group">
+          <label for="title">Product Title *</label>
+          <input type="text" id="title" required placeholder="e.g., Burnay Drinking Glass">
+        </div>
+        
+        <div class="form-group">
+          <label for="origin">Origin / Location *</label>
+          <input type="text" id="origin" required placeholder="e.g., Vigan, Ilocos Sur, Philippines">
+        </div>
+        
+        <div class="form-group">
+          <label for="tag">Category Tag *</label>
+          <input type="text" id="tag" required placeholder="e.g., Home Goods">
+        </div>
+        
+        <div class="form-group">
+          <label for="tag_class">Tag Class (for styling) *</label>
+          <select id="tag_class" required>
+            <option value="home">Home</option>
+            <option value="fashion">Fashion</option>
+            <option value="food">Food</option>
+            <option value="decor">Decor</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="sector">Product Sector *</label>
+          <select id="sector" required>
+            <option value="home">Home Goods</option>
+            <option value="apparel">Apparel</option>
+            <option value="pantry">Pantry Items</option>
+            <option value="decor">Decor / Handicrafts</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Product Description *</label>
+          <textarea id="description" required placeholder="Describe the product, its craftsmanship, materials, and cultural significance..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="image">Product Image *</label>
+          <input type="file" id="image" accept="image/*" required>
+          <small style="color: #666; display: block; margin-top: 5px;">Recommended: Square or landscape image (max 2MB)</small>
+          <img id="imagePreview" class="preview-image" alt="Preview">
+        </div>
+        
+        <button type="submit" class="btn-submit" style="color:red">
+          <i class="fas fa-save"></i> Save Product
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

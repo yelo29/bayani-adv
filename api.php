@@ -20,6 +20,12 @@ switch($action) {
     case 'get_products':
         getProducts();
         break;
+    case 'get_featured':
+        getFeaturedProducts();
+        break;
+    case 'get_product_details':
+        getProductDetails();
+        break;
     case 'vote':
         voteProduct();
         break;
@@ -58,7 +64,6 @@ function register() {
     }
     
     try {
-        // Check if email already exists
         $checkStmt = $pdo->prepare("SELECT id FROM users WHERE email = :email");
         $checkStmt->bindParam(':email', $email);
         $checkStmt->execute();
@@ -68,7 +73,6 @@ function register() {
             return;
         }
         
-        // Hash password and create user
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $insertStmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :password)");
         $insertStmt->bindParam(':email', $email);
@@ -154,7 +158,6 @@ function getProducts() {
     $stmt->execute();
     $products = $stmt->fetchAll();
     
-    // Get user's voted products if logged in
     $userId = getUserId();
     $votedProducts = [];
     
@@ -166,17 +169,84 @@ function getProducts() {
             $voteResults = $voteStmt->fetchAll(PDO::FETCH_ASSOC);
             $votedProducts = array_column($voteResults, 'product_id');
         } catch (Exception $e) {
-            // If votes table doesn't exist or has issues, continue without vote data
             $votedProducts = [];
         }
     }
     
-    // Add user_voted flag to each product
     foreach ($products as &$product) {
         $product['user_voted'] = in_array($product['id'], $votedProducts);
     }
     
     echo json_encode($products);
+}
+
+function getFeaturedProducts() {
+    global $pdo;
+    
+    $sql = "SELECT id, title, origin, tag, tag_class, description, image_url, sector, vote_count 
+            FROM products 
+            ORDER BY vote_count DESC 
+            LIMIT 4";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $products = $stmt->fetchAll();
+    
+    $userId = getUserId();
+    $votedProducts = [];
+    
+    if ($userId) {
+        try {
+            $voteStmt = $pdo->prepare("SELECT product_id FROM votes WHERE user_id = :uid");
+            $voteStmt->bindParam(':uid', $userId);
+            $voteStmt->execute();
+            $voteResults = $voteStmt->fetchAll(PDO::FETCH_ASSOC);
+            $votedProducts = array_column($voteResults, 'product_id');
+        } catch (Exception $e) {
+            $votedProducts = [];
+        }
+    }
+    
+    foreach ($products as &$product) {
+        $product['user_voted'] = in_array($product['id'], $votedProducts);
+    }
+    
+    echo json_encode($products);
+}
+
+function getProductDetails() {
+    global $pdo;
+    
+    $productId = $_GET['product_id'] ?? 0;
+    
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE id = :pid");
+    $stmt->bindParam(':pid', $productId);
+    $stmt->execute();
+    $product = $stmt->fetch();
+    
+    if (!$product) {
+        echo json_encode(['error' => 'Product not found']);
+        return;
+    }
+    
+    $userId = getUserId();
+    $hasVoted = false;
+    
+    if ($userId) {
+        try {
+            $voteStmt = $pdo->prepare("SELECT id FROM votes WHERE product_id = :pid AND user_id = :uid");
+            $voteStmt->bindParam(':pid', $productId);
+            $voteStmt->bindParam(':uid', $userId);
+            $voteStmt->execute();
+            $hasVoted = $voteStmt->fetch() !== false;
+        } catch (Exception $e) {
+            $hasVoted = false;
+        }
+    }
+    
+    $product['user_voted'] = $hasVoted;
+    
+    echo json_encode($product);
 }
 
 function voteProduct() {
@@ -196,14 +266,12 @@ function voteProduct() {
     try {
         $pdo->beginTransaction();
         
-        // Check if already voted
         $checkStmt = $pdo->prepare("SELECT id FROM votes WHERE product_id = :pid AND user_id = :uid");
         $checkStmt->bindParam(':pid', $productId);
         $checkStmt->bindParam(':uid', $userId);
         $checkStmt->execute();
         
         if ($checkStmt->fetch()) {
-            // Remove vote (toggle)
             $deleteStmt = $pdo->prepare("DELETE FROM votes WHERE product_id = :pid AND user_id = :uid");
             $deleteStmt->bindParam(':pid', $productId);
             $deleteStmt->bindParam(':uid', $userId);
@@ -215,7 +283,6 @@ function voteProduct() {
             
             $voted = false;
         } else {
-            // Add vote
             $insertStmt = $pdo->prepare("INSERT INTO votes (product_id, user_id) VALUES (:pid, :uid)");
             $insertStmt->bindParam(':pid', $productId);
             $insertStmt->bindParam(':uid', $userId);
@@ -230,7 +297,6 @@ function voteProduct() {
         
         $pdo->commit();
         
-        // Get updated vote count
         $countStmt = $pdo->prepare("SELECT vote_count FROM products WHERE id = :pid");
         $countStmt->bindParam(':pid', $productId);
         $countStmt->execute();

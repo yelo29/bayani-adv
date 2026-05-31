@@ -1,7 +1,7 @@
 /* ─── NAVIGATION MOBILE TOGGLE ─────────────────────────── */
 function toggleMenu() {
   const links = document.getElementById("navLinks");
-  links.classList.toggle("open");
+  if (links) links.classList.toggle("open");
 }
 
 /* ─── NAVIGATION ACTIVE STATE LINKING ─────────────────── */
@@ -11,7 +11,9 @@ document.querySelectorAll('.nav-links a, .footer-col ul a').forEach(link => {
     const href = this.getAttribute('href');
     const correspondNav = document.querySelector(`.nav-links a[href="${href}"]`);
     if(correspondNav) correspondNav.classList.add('active');
-    document.getElementById("navLinks").classList.remove("open");
+    
+    const navLinksContainer = document.getElementById("navLinks");
+    if (navLinksContainer) navLinksContainer.classList.remove("open");
   });
 });
 
@@ -20,22 +22,26 @@ function filterSector(sector) {
   const cards = document.querySelectorAll('#productGrid .product-card');
   const pills = document.querySelectorAll('#browseFilters .filter-pill');
   
-  pills.forEach(pill => {
-    pill.classList.remove('active');
-    if(sector === 'all' && pill.innerText.includes('All')) pill.classList.add('active');
-    if(sector === 'home' && pill.innerText.includes('Home')) pill.classList.add('active');
-    if(sector === 'apparel' && pill.innerText.includes('Apparel')) pill.classList.add('active');
-    if(sector === 'pantry' && pill.innerText.includes('Pantry')) pill.classList.add('active');
-    if(sector === 'decor' && pill.innerText.includes('Decor')) pill.classList.add('active');
-  });
+  if (pills.length > 0) {
+    pills.forEach(pill => {
+      pill.classList.remove('active');
+      if(sector === 'all' && pill.innerText.includes('All')) pill.classList.add('active');
+      if(sector === 'home' && pill.innerText.includes('Home')) pill.classList.add('active');
+      if(sector === 'apparel' && pill.innerText.includes('Apparel')) pill.classList.add('active');
+      if(sector === 'pantry' && pill.innerText.includes('Pantry')) pill.classList.add('active');
+      if(sector === 'decor' && pill.innerText.includes('Decor')) pill.classList.add('active');
+    });
+  }
 
-  cards.forEach(card => {
-    if (sector === 'all' || card.getAttribute('data-sector') === sector) {
-      card.classList.remove('hidden');
-    } else {
-      card.classList.add('hidden');
-    }
-  });
+  if (cards.length > 0) {
+    cards.forEach(card => {
+      if (sector === 'all' || card.getAttribute('data-sector') === sector) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }
 }
 
 /* ─── FEATURED PRODUCT TABS SLIDER (CAROUSEL) ──────────── */
@@ -47,6 +53,7 @@ const totalTabs = slides.length;
 let tabInterval;
 
 function switchFeaturedTab(index) {
+  if (totalTabs === 0) return;
   slides.forEach(slide => slide.classList.remove("active"));
   indicators.forEach(ind => ind.classList.remove("active"));
   buttons.forEach(btn => btn.classList.remove("active"));
@@ -59,6 +66,7 @@ function switchFeaturedTab(index) {
 }
 
 function startTabAutoplay() {
+  if (totalTabs === 0) return;
   tabInterval = setInterval(() => {
     currentTab = (currentTab + 1) % totalTabs;
     switchFeaturedTab(currentTab);
@@ -260,7 +268,6 @@ function openModal(id) {
   document.getElementById("modalDynamicContent").innerHTML = headerHtml;
   document.getElementById("modalTabsContainer").innerHTML = tabsHtml;
   
-  // Load default tab panel view
   const panel = document.getElementById('modalPanelContent');
   panel.innerHTML = `<p>${data.overview}</p>`;
 
@@ -288,7 +295,7 @@ function switchModalTab(tabElement, tabType) {
     for (const [key, value] of Object.entries(activeProductData.details)) {
       tableRows += `<tr><td>${key}</td><td>${value}</td></tr>`;
     }
-    panel.innerHTML = `<table class=\"specs-tbl\">${tableRows}</table>`;
+    panel.innerHTML = `<table class="specs-tbl">${tableRows}</table>`;
   }
 }
 
@@ -299,5 +306,15 @@ function closeModal() {
 
 /* ─── INITIALIZATION ON RUNTIME ───────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  startTabAutoplay();
+  // Init hero tabs slider if on homepage
+  if(document.querySelectorAll(".featured-slide").length > 0) {
+    startTabAutoplay();
+  }
+  
+  // Handles cross-page sector filtering from footer links
+  const targetSector = localStorage.getItem('filterSector');
+  if (targetSector && document.getElementById('productGrid')) {
+    filterSector(targetSector);
+    localStorage.removeItem('filterSector'); // clear state token
+  }
 });

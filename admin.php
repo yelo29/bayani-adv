@@ -2,9 +2,20 @@
 header('Content-Type: application/json');
 require_once 'config.php';
 
+session_start();
+
 $action = $_GET['action'] ?? '';
 
 switch($action) {
+    case 'admin_login':
+        adminLogin();
+        break;
+    case 'admin_logout':
+        adminLogout();
+        break;
+    case 'check_admin_auth':
+        checkAdminAuth();
+        break;
     case 'get_products':
         getProducts();
         break;
@@ -19,6 +30,53 @@ switch($action) {
         break;
     default:
         echo json_encode(['error' => 'Invalid action']);
+}
+
+function adminLogin() {
+    global $pdo;
+    
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo json_encode(['error' => 'Invalid request method']);
+        return;
+    }
+    
+    $data = json_decode(file_get_contents('php://input'), true);
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+    
+    if (empty($email) || empty($password)) {
+        echo json_encode(['error' => 'Email and password are required']);
+        return;
+    }
+    
+    try {
+        $stmt = $pdo->prepare("SELECT id, email, password FROM admins WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $admin = $stmt->fetch();
+        
+        if ($admin && $password === $admin['password']) {
+            $_SESSION['admin_id'] = $admin['id'];
+            $_SESSION['admin_email'] = $admin['email'];
+            echo json_encode(['success' => true, 'message' => 'Login successful']);
+        } else {
+            echo json_encode(['error' => 'Invalid email or password']);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['error' => $e->getMessage()]);
+    }
+}
+
+function adminLogout() {
+    session_destroy();
+    echo json_encode(['success' => true, 'message' => 'Logged out successfully']);
+}
+
+function checkAdminAuth() {
+    echo json_encode([
+        'logged_in' => isset($_SESSION['admin_id']),
+        'admin_email' => $_SESSION['admin_email'] ?? null
+    ]);
 }
 
 function getProducts() {

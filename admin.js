@@ -1,44 +1,88 @@
 const ADMIN_API_URL = 'admin.php';
-const ADMIN_PASSWORD = 'gawang2026'; // Change this to your desired password
 
 // Check login on page load
 document.addEventListener('DOMContentLoaded', () => {
-  // Check if already logged in
-  if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-    showAdminPanel();
-  }
+  checkAdminAuth();
   
   // Allow Enter key for login
   document.getElementById('adminPassword').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
-      checkLogin();
+      handleAdminLogin();
+    }
+  });
+  
+  document.getElementById('adminEmail').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      document.getElementById('adminPassword').focus();
     }
   });
 });
 
-function checkLogin() {
+async function checkAdminAuth() {
+  try {
+    const response = await fetch(`${ADMIN_API_URL}?action=check_admin_auth`);
+    const data = await response.json();
+    
+    if (data.logged_in) {
+      showAdminPanel(data.admin_email);
+    }
+  } catch (error) {
+    console.error('Auth check failed:', error);
+  }
+}
+
+async function handleAdminLogin() {
+  const email = document.getElementById('adminEmail').value;
   const password = document.getElementById('adminPassword').value;
   
-  if (password === ADMIN_PASSWORD) {
-    sessionStorage.setItem('adminLoggedIn', 'true');
-    showAdminPanel();
-  } else {
+  if (!email || !password) {
+    document.getElementById('loginError').textContent = 'Email and password are required';
     document.getElementById('loginError').classList.add('active');
     setTimeout(() => {
       document.getElementById('loginError').classList.remove('active');
     }, 2000);
+    return;
+  }
+  
+  try {
+    const response = await fetch(`${ADMIN_API_URL}?action=admin_login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showAdminPanel(email);
+    } else {
+      document.getElementById('loginError').textContent = result.error;
+      document.getElementById('loginError').classList.add('active');
+      setTimeout(() => {
+        document.getElementById('loginError').classList.remove('active');
+      }, 2000);
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    document.getElementById('loginError').textContent = 'Login failed. Please try again.';
+    document.getElementById('loginError').classList.add('active');
   }
 }
 
-function showAdminPanel() {
+function showAdminPanel(email) {
   document.getElementById('loginOverlay').classList.add('hidden');
   document.getElementById('adminContent').classList.add('active');
   loadProducts();
 }
 
-function logout() {
-  sessionStorage.removeItem('adminLoggedIn');
-  location.reload();
+async function logout() {
+  try {
+    await fetch(`${ADMIN_API_URL}?action=admin_logout`);
+    location.reload();
+  } catch (error) {
+    console.error('Logout error:', error);
+    location.reload();
+  }
 }
 
 // Load all products

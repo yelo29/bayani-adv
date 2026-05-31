@@ -26,6 +26,7 @@ function filterSector(sector) {
     if(sector === 'home' && pill.innerText.includes('Home')) pill.classList.add('active');
     if(sector === 'apparel' && pill.innerText.includes('Apparel')) pill.classList.add('active');
     if(sector === 'pantry' && pill.innerText.includes('Pantry')) pill.classList.add('active');
+    if(sector === 'decor' && pill.innerText.includes('Decor')) pill.classList.add('active');
   });
 
   cards.forEach(card => {
@@ -111,50 +112,118 @@ const modalData = {
     origin: "Kalibo, Aklan, Philippines",
     tag: "Apparel",
     tagClass: "fashion",
-    placeholderImg: "https://placehold.co/600x400/2B1F17/C9A97A?text=Piña+Weave+Shirt+Image",
+    placeholderImg: "https://placehold.co/600x400/2B1F17/C9A97A?text=Pi%C3%B1a+Weave+Shirt+Image",
     overview: "Delicately interlaced structural organic thread combinations providing incredible airy structural breathing indexes perfect for humid or warm tropical climates.",
     history: "Piña weaving dates back centuries in Aklan, turning discarded pineapple agricultural leave layers into prized luxury textiles traditionally reserved for colonial elite garments.",
-    whereToFind: "Handcrafted directly on-demand by native weaving associations in Kalibo, alongside verified premium local trade boutiques.",
-    didYouKnow: "Extracting the premium 'Liniwan' fibers manually requires scraping pineapple leaves with broken porcelain plate fragments to protect the raw strand elasticity!",
+    whereToFind: "Handcrafted directly on-demand by native weaving associations in Kalibo, or through premier ethical boutique hubs in major urban hubs.",
+    didYouKnow: "The raw leaf extraction requires scrapers made out of broken porcelain plates to safely strip away the outer leaf layer without snapping internal fiber microstructures!",
     details: {
-      "Production Timeline": "14-20 Weaving Days",
-      "Material Standard": "Organic Aklan Pineapple Leaf Fiber & Fine Local Cotton Threads",
-      "Artisan Partners": "Kalibo Heritage Weaver Unions",
-      "Care Instructions": "Hand wash only with mild soap detergents; line dry out of aggressive direct sunlight."
+      "Production Timeline": "14-20 Days Manual Scraping & Looming",
+      "Material Standard": "Organic Aklan Red Pineapple Fiber Blend",
+      "Artisan Partners": "Kalibo Heritage Weaving Associations",
+      "Care Instructions": "Hand wash only; mild soap formula; line dry out of direct sun."
     }
   },
   3: {
-    title: "Traditional Sukang Iloko",
+    title: "Sukang Iloko",
     origin: "Ilocos Region, Philippines",
     tag: "Pantry Items",
     tagClass: "food",
     placeholderImg: "https://placehold.co/600x400/2B1F17/C9A97A?text=Sukang+Iloko+Image",
-    overview: "Premium sugarcane extracts processed through historical aging styles mixed carefully with native seasoning tree variants to complete a highly versatile vinegar condiment profile.",
-    history: "A fundamental cornerstone of northern Philippine culinary history, Sukang Iloko has been produced in household backyards for generations utilizing specialized dark earthenware storage fermentation processes.",
-    whereToFind: "Sourced straight from certified small-batch family farm cooperatives across the Ilocos Norte agricultural processing zones.",
-    didYouKnow: "The characteristically deep, dark color and unique earthy dry profile are produced naturally by infusing bark and leaves from the native Samak tree during initial fermentation steps!",
+    overview: "Naturally fermented dark sugar cane vinegar that delivers an incredibly robust sour bite backed with subtle earthy, herbal undertones perfect for culinary dressings.",
+    history: "Born out of rural preservation frameworks in northern Luzon, this variant depends heavily on the integration of wild native Samak bark fragments to drive natural aging properties.",
+    whereToFind: "Distributed straight from family farm cooperations around Ilocos Norte, packaged cleanly inside standardized glass vessels.",
+    didYouKnow: "True Sukang Iloko gains a progressively deeper pitch-black color hue the longer it cures inside its dark community aging chambers!",
     details: {
-      "Fermentation Cycle": "6 to 12 Months Minimum Aging",
-      "Material Standard": "Pure Sugarcane Juice & Local Samak Plant Bark Extracts",
-      "Artisan Partners": "Northern Luzon Small-Scale Farmers",
-      "Shelf Life": "Indefinite shelf stability; profile complexifies naturally over continuous time frames."
+      "Production Timeline": "3-6 Months Natural Barrel Curing",
+      "Material Standard": "100% Pure Ilocos Sugarcane Pressings",
+      "Artisan Partners": "Northern Luzon Grassroots Agri-Cooperatives",
+      "Care Instructions": "Store at ambient room temperature away from direct solar radiation."
     }
   },
   4: {
     title: "Basey Banig Mat",
     origin: "Basey, Samar, Philippines",
     tag: "Home Goods",
-    tagClass: "crafts",
+    tagClass: "home",
     placeholderImg: "https://placehold.co/600x400/2B1F17/C9A97A?text=Banig+Mat+Image",
-    overview: "Intricately handwoven reed mats featuring unique geometric, historical, and floral community layout designs that display raw visual Filipino artistry.",
-    history: "The weavers of Basey have engineered cave-dwelling workspace operations for generations. Gathering inside cool local environments optimizes reed flexibility during production.",
-    whereToFind: "Acquired straight from regional community weavers in Samar or via targeted ethical fair-trade e-commerce hubs.",
-    didYouKnow: "Weaving complex banig structures inside humid local cave channels prevents the Tikog leaves from drying out and snapping mid-braid!",
+    overview: "Intricately handwoven native floor mats constructed with dyed tikog stalks, displaying generational community design maps.",
+    history: "Basey has served as the weaving center of Eastern Visayas since the early Spanish records, with techniques sustained inside cave networks where climate preserves reed moisture.",
+    whereToFind: "Sourced through direct community craft hubs inside Samar or seasonal provincial trade events.",
+    didYouKnow: "Weaving happens inside cool limestone caves because the natural underground moisture keeps the tikog fibers exceptionally pliable and prevents snapping!",
     details: {
-      "Production Timeline": "3-4 Weeks Depending on Visual Patterns",
-      "Material Standard": "Sustainably Harvested Natural Tikog Reed Strands",
-      "Artisan Partners": "Basey Women's Weaving Collectives",
-      "Care Instructions": "Keep dry; wipe down cleanly with simple dry cloths if exposed to workspace moisture."
+      "Production Timeline": "12-15 Days Intricate Hand-Weaving",
+      "Material Standard": "Locally Harvested and Sun-Dried Tikog Reeds",
+      "Artisan Partners": "Basey Women's Weaving Guilds",
+      "Care Instructions": "Wipe with clean damp cloth; air dry completely before storage."
+    }
+  },
+  5: {
+    title: "Capiz Shell Lotus Lantern",
+    origin: "Samal, Bataan, Philippines",
+    tag: "Decor/Handicrafts",
+    tagClass: "decor",
+    placeholderImg: "https://placehold.co/600x400/2B1F17/C4522A?text=Capiz+Lantern+Image",
+    overview: "A beautiful lotus-shaped lantern handcrafted using translucent marine windowpane oyster shells, casting a soft, warm geometric ambient glow.",
+    history: "Before modern glass imports, Capiz shells were widely used in historical Filipino architecture for windows due to their durable translucent qualities, a craft preserved today through light decorations.",
+    whereToFind: "Sourced straight from specialized coastal artisan collectives along Bataan shores or provincial craft networks.",
+    didYouKnow: "Each raw oyster shell must be acid-washed and painstakingly baked in traditional kilns to achieve its distinct pearlescent sheen!",
+    details: {
+      "Production Timeline": "5-7 Days Shell Cutting & Brass Binding",
+      "Material Standard": "100% Safely Harvested Windowpane Oyster Shells",
+      "Artisan Partners": "Bataan Maritime Craft Collectives",
+      "Care Instructions": "Dust lightly with a soft micro-fiber brush; do not apply harsh cleaning chemicals."
+    }
+  },
+  6: {
+    title: "Paete Wooden Table Sculpture",
+    origin: "Paete, Laguna, Philippines",
+    tag: "Decor/Handicrafts",
+    tagClass: "decor",
+    placeholderImg: "https://placehold.co/600x400/2B1F17/C4522A?text=Paete+Woodcarving+Image",
+    overview: "A meticulously detailed table centerpiece hand-chiseled out of sustainably sourced local wood blocks, depicting traditional countryside scenes.",
+    history: "Declared the Carving Capital of the Philippines, Paete's woodcarving line extends to ancient roots, with methods passed down across generations since the late 1500s.",
+    whereToFind: "Acquired through direct registration with generational family studios based along the main carving strip of Paete, Laguna.",
+    didYouKnow: "The name Paete itself was born out of a misunderstanding over 'paet', the local Tagalog word for a carpenter's chisel tool!",
+    details: {
+      "Production Timeline": "10-14 Days Singlework Chiseling",
+      "Material Standard": "Sustainably Foraged Local Acacia or Batikuling Wood",
+      "Artisan Partners": "Generational Carving Families of Laguna",
+      "Care Instructions": "Apply premium mineral wood oil once a year to keep wood texture rich."
+    }
+  },
+  7: {
+    title: "Abaca Twine Basket Vase",
+    origin: "Daraga, Albay, Philippines",
+    tag: "Decor/Handicrafts",
+    tagClass: "decor",
+    placeholderImg: "https://placehold.co/600x400/2B1F17/C4522A?text=Abaca+Vase+Image",
+    overview: "A durable structural vase shaped tightly from thick coiled abaca hemp stalks, providing excellent structural weight and organic aesthetic values.",
+    history: "Abaca, famously known worldwide as Manila Hemp, is native to the Philippines. Bicolano makers have mastered converting this incredibly tough crop plant into home decor assets.",
+    whereToFind: "Available directly through sustainable farming cooperatives in Albay province.",
+    didYouKnow: "Abaca fiber possesses immense tensile structural strengths; it was historically preferred globally for heavy-duty naval ship rigging ropes!",
+    details: {
+      "Production Timeline": "3-5 Days Fiber Coiling & Frame Looming",
+      "Material Standard": "Premium High-Grade Bicol Abaca Plant Hemp",
+      "Artisan Partners": "Daraga Grassroots Farm Cooperatives",
+      "Care Instructions": "Keep in dry ambient environments; vacuum on low setting to remove dust."
+    }
+  },
+  8: {
+    title: "Traditional Wire Filigree Ornament",
+    origin: "Sorsogon City, Philippines",
+    tag: "Decor/Handicrafts",
+    tagClass: "decor",
+    placeholderImg: "https://placehold.co/600x400/2B1F17/C4522A?text=Filigree+Ornament+Image",
+    overview: "An delicate decorative hanging ornament created by weaving fine metallic silver-plated copper wire loops into miniature traditional icons.",
+    history: "Filigree work involves an incredibly slow, demanding technique where master smiths bond fine thread-like wires together, a heritage design style preserved in local community circles.",
+    whereToFind: "Distributed directly through independent family micro-studios based out of Sorsogon.",
+    didYouKnow: "The smiths twist two individual wire strands together and hammer them flat to give the micro-borders an iconic rope-like texture look!",
+    details: {
+      "Production Timeline": "4-6 Days Micro-Soldering Work",
+      "Material Standard": "Silver-Plated Pure Soft Copper Wire Element Mix",
+      "Artisan Partners": "Sorsogon Provincial Micro-Smith Studios",
+      "Care Instructions": "Handle gently by the thick outer borders; store inside soft cloth bags."
     }
   }
 };
@@ -175,22 +244,26 @@ function openModal(id) {
         <span class="tag ${data.tagClass}">${data.tag}</span>
         <h2>${data.title}</h2>
         <div class="origin"><i class="fas fa-map-marker-alt"></i> ${data.origin}</div>
-        <p>${data.overview}</p>
+        <p>Proudly made by local craft groups using heirloom methods preserved through family lineages.</p>
       </div>
     </div>
-    <div class="modal-tabs" id="modalTabsContainer">
-      <div class="modal-tab active" onclick="switchModalTab(this, 'overview')">Overview</div>
-      <div class="modal-tab" onclick="switchModalTab(this, 'history')">History</div>
-      <div class="modal-tab" onclick="switchModalTab(this, 'where')">Where to Find?</div>
-      <div class="modal-tab" onclick="switchModalTab(this, 'dyk')">Did You Know?</div>
-      <div class="modal-tab" onclick="switchModalTab(this, 'details')">Details</div>
-    </div>
-    <div class="modal-panel active" id="modalPanelContent">
-      <p>${data.overview}</p>
-    </div>
   `;
-  
+
+  const tabsHtml = `
+    <div class="modal-tab active" onclick="switchModalTab(this, 'overview')">Overview</div>
+    <div class="modal-tab" onclick="switchModalTab(this, 'history')">Heritage Story</div>
+    <div class="modal-tab" onclick="switchModalTab(this, 'where')">Where to Find</div>
+    <div class="modal-tab" onclick="switchModalTab(this, 'dyk')">Did You Know?</div>
+    <div class="modal-tab" onclick="switchModalTab(this, 'details')">Specifications</div>
+  `;
+
   document.getElementById("modalDynamicContent").innerHTML = headerHtml;
+  document.getElementById("modalTabsContainer").innerHTML = tabsHtml;
+  
+  // Load default tab panel view
+  const panel = document.getElementById('modalPanelContent');
+  panel.innerHTML = `<p>${data.overview}</p>`;
+
   document.getElementById("productModal").classList.add("open");
 }
 
@@ -215,7 +288,7 @@ function switchModalTab(tabElement, tabType) {
     for (const [key, value] of Object.entries(activeProductData.details)) {
       tableRows += `<tr><td>${key}</td><td>${value}</td></tr>`;
     }
-    panel.innerHTML = `<table class="specs-tbl">${tableRows}</table>`;
+    panel.innerHTML = `<table class=\"specs-tbl\">${tableRows}</table>`;
   }
 }
 
@@ -224,7 +297,7 @@ function closeModal() {
   activeProductData = null;
 }
 
-/* ─── RUNTIME INITIALIZATION ────────────────────────────── */
+/* ─── INITIALIZATION ON RUNTIME ───────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   startTabAutoplay();
 });

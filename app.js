@@ -17,32 +17,373 @@ document.querySelectorAll('.nav-links a, .footer-col ul a').forEach(link => {
   });
 });
 
-/* ─── PRODUCT BROWSE SECTOR FILTERS ────────────────────── */
-function filterSector(sector) {
-  const cards = document.querySelectorAll('#productGrid .product-card');
-  const pills = document.querySelectorAll('#browseFilters .filter-pill');
-  
-  if (pills.length > 0) {
-    pills.forEach(pill => {
-      pill.classList.remove('active');
-      if(sector === 'all' && pill.innerText.includes('All')) pill.classList.add('active');
-      if(sector === 'home' && pill.innerText.includes('Home')) pill.classList.add('active');
-      if(sector === 'apparel' && pill.innerText.includes('Apparel')) pill.classList.add('active');
-      if(sector === 'pantry' && pill.innerText.includes('Pantry')) pill.classList.add('active');
-      if(sector === 'decor' && pill.innerText.includes('Decor')) pill.classList.add('active');
-    });
-  }
+/* ─── HAMBURGER MENU EVENT LISTENER ────────────────────── */
+const hamburger = document.getElementById('hamburger');
+if (hamburger) {
+  hamburger.addEventListener('click', toggleMenu);
+}
 
-  if (cards.length > 0) {
-    cards.forEach(card => {
-      if (sector === 'all' || card.getAttribute('data-sector') === sector) {
-        card.classList.remove('hidden');
-      } else {
-        card.classList.add('hidden');
-      }
-    });
+/* ─── AUTHENTICATION SYSTEM ─────────────────────────────── */
+let isLoginMode = true;
+
+function checkAuthStatus() {
+  fetch(`${API_URL}?action=check_auth`)
+    .then(res => res.json())
+    .then(data => {
+      updateAuthNav(data.logged_in, data.user_email);
+    })
+    .catch(err => console.error('Auth check failed:', err));
+}
+
+function updateAuthNav(loggedIn, userEmail) {
+  const container = document.getElementById('authNavContainer');
+  if (!container) return;
+  
+  if (loggedIn && userEmail) {
+    container.innerHTML = `
+      <div class="user-info">
+        <span class="user-email">${userEmail}</span>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
+      <button class="auth-nav-btn" onclick="openAuthModal()">Login</button>
+    `;
   }
 }
+
+function openAuthModal() {
+  const modal = document.getElementById('authModal');
+  if (modal) modal.classList.add('open');
+  isLoginMode = true;
+  updateAuthModalUI();
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById('authModal');
+  if (modal) modal.classList.remove('open');
+  const messageDiv = document.getElementById('authMessage');
+  if (messageDiv) messageDiv.innerHTML = '';
+  const form = document.getElementById('authForm');
+  if (form) form.reset();
+}
+
+function toggleAuthMode() {
+  isLoginMode = !isLoginMode;
+  updateAuthModalUI();
+  const messageDiv = document.getElementById('authMessage');
+  if (messageDiv) messageDiv.innerHTML = '';
+  const form = document.getElementById('authForm');
+  if (form) form.reset();
+}
+
+function updateAuthModalUI() {
+  const title = document.getElementById('authTitle');
+  const subtitle = document.getElementById('authSubtitle');
+  const submitBtn = document.getElementById('authSubmitBtn');
+  const switchText = document.getElementById('authSwitchText');
+  const switchLink = document.getElementById('authSwitchLink');
+  
+  if (isLoginMode) {
+    title.textContent = 'Login';
+    subtitle.textContent = 'Sign in to vote on your favorite products';
+    submitBtn.textContent = 'Login';
+    switchText.textContent = "Don't have an account?";
+    switchLink.textContent = 'Register';
+  } else {
+    title.textContent = 'Register';
+    subtitle.textContent = 'Create an account to vote on your favorite products';
+    submitBtn.textContent = 'Register';
+    switchText.textContent = 'Already have an account?';
+    switchLink.textContent = 'Login';
+  }
+}
+
+function handleAuthSubmit(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('authEmail').value;
+  const password = document.getElementById('authPassword').value;
+  const messageDiv = document.getElementById('authMessage');
+  
+  const action = isLoginMode ? 'login' : 'register';
+  
+  fetch(`${API_URL}?action=${action}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      messageDiv.innerHTML = `<div class="auth-success">${data.message}</div>`;
+      setTimeout(() => {
+        closeAuthModal();
+        checkAuthStatus();
+        // Reload products to update vote UI
+        if (document.getElementById('productGrid')) {
+          loadProductsFromAPI(currentFilter);
+        }
+      }, 1000);
+    } else {
+      messageDiv.innerHTML = `<div class="auth-error">${data.error}</div>`;
+    }
+  })
+  .catch(err => {
+    messageDiv.innerHTML = `<div class="auth-error">An error occurred. Please try again.</div>`;
+    console.error('Auth error:', err);
+  });
+}
+
+function handleLogout() {
+  fetch(`${API_URL}?action=logout`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        checkAuthStatus();
+        // Reload products to update vote UI
+        if (document.getElementById('productGrid')) {
+          loadProductsFromAPI(currentFilter);
+        }
+      }
+    })
+    .catch(err => console.error('Logout error:', err));
+}
+
+/* ─── VOTING SYSTEM (PHP API integration) ─────────────────────────── */
+const API_URL = 'api.php';
+
+async function loadProductsFromAPI(sector = 'all') {
+  try {
+    const url = sector === 'all' ? `${API_URL}?action=get_products` : `${API_URL}?action=get_products&sector=${sector}`;
+    const response = await fetch(url);
+    const products = await response.json();
+    renderProductsFromAPI(products);
+  } catch (error) {
+    console.error('Error loading products:', error);
+  }
+}
+
+function renderProductsFromAPI(products) {
+  const grid = document.getElementById('productGrid');
+  if (!grid) return;
+  
+  grid.innerHTML = products.map(product => `
+    <div class="product-card" data-sector="${product.sector}" data-popular="${product.vote_count > 0 ? 'true' : 'false'}" data-product-id="${product.id}">
+      <div class="product-card-image">
+        <img src="${product.image_url}" alt="${product.title}">
+        <span class="product-card-tag ${product.tag_class}">${product.tag}</span>
+        ${product.vote_count > 0 ? `<span class="product-card-badge popular"><i class="fas fa-star"></i> Popular</span>` : ''}
+        <button class="vote-button ${product.user_voted ? 'voted' : ''}" onclick="event.stopPropagation(); toggleVote(${product.id})" data-product-id="${product.id}">
+          <i class="fas fa-heart"></i>
+          <span class="vote-count">${product.vote_count}</span>
+        </button>
+      </div>
+      <div class="product-card-content">
+        <div class="product-card-origin">${product.origin}</div>
+        <h3>${product.title}</h3>
+        <p class="product-card-desc">${product.description}</p>
+        <div class="product-card-footer">
+          <span class="product-card-action">View Breakdown →</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  
+  // Re-attach click handlers
+  document.querySelectorAll('#productGrid .product-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const productId = card.getAttribute('data-product-id');
+      if (productId) {
+        openModal(parseInt(productId));
+      }
+    });
+  });
+}
+
+async function toggleVote(productId) {
+  // Check if logged in first
+  try {
+    const authRes = await fetch(`${API_URL}?action=check_auth`);
+    const authData = await authRes.json();
+    
+    if (!authData.logged_in) {
+      openAuthModal();
+      return;
+    }
+  } catch (err) {
+    console.error('Auth check failed:', err);
+    openAuthModal();
+    return;
+  }
+  
+  // Proceed with voting if logged in
+  try {
+    const response = await fetch(`${API_URL}?action=vote`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ product_id: productId })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Update UI for this specific button
+      const btn = document.querySelector(`.vote-button[data-product-id="${productId}"]`);
+      if (btn) {
+        const countSpan = btn.querySelector('.vote-count');
+        if (countSpan) {
+          countSpan.textContent = result.vote_count;
+        }
+        
+        if (result.voted) {
+          btn.classList.add('voted');
+        } else {
+          btn.classList.remove('voted');
+        }
+      }
+      
+      // Reload products to update popular badges
+      loadProductsFromAPI(currentFilter);
+    } else {
+      console.error('Vote failed:', result.error);
+    }
+  } catch (error) {
+    console.error('Error voting:', error);
+  }
+}
+
+/* ─── PRODUCT FILTERING SYSTEM ─────────────────────────── */
+let currentFilter = 'all';
+let searchQuery = '';
+
+function filterProducts() {
+  const cards = document.querySelectorAll('#productGrid .product-card');
+  const pills = document.querySelectorAll('#browseFilters .filter-pill');
+  const noResults = document.getElementById('noResults');
+  const resultsCount = document.getElementById('searchResultsCount');
+  
+  let visibleCount = 0;
+
+  // Update active pill
+  pills.forEach(pill => {
+    pill.classList.remove('active');
+    const filter = pill.getAttribute('data-filter');
+    if (filter === currentFilter) {
+      pill.classList.add('active');
+    }
+  });
+
+  // Filter cards
+  cards.forEach(card => {
+    const sector = card.getAttribute('data-sector');
+    const isPopular = card.getAttribute('data-popular') === 'true';
+    const title = card.querySelector('h3').textContent.toLowerCase();
+    const origin = card.querySelector('.product-card-origin').textContent.toLowerCase();
+    const desc = card.querySelector('.product-card-desc').textContent.toLowerCase();
+    
+    // Check sector filter
+    let matchesSector = false;
+    if (currentFilter === 'all') {
+      matchesSector = true;
+    } else if (currentFilter === 'popular') {
+      matchesSector = isPopular;
+    } else {
+      matchesSector = sector === currentFilter;
+    }
+    
+    // Check search query
+    let matchesSearch = true;
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      matchesSearch = title.includes(query) || origin.includes(query) || desc.includes(query);
+    }
+    
+    // Apply filter
+    if (matchesSector && matchesSearch) {
+      card.classList.remove('hidden');
+      visibleCount++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+
+  // Show/hide no results message
+  if (noResults) {
+    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  // Update results count
+  if (resultsCount) {
+    if (searchQuery || currentFilter !== 'all') {
+      resultsCount.textContent = `Showing ${visibleCount} product${visibleCount !== 1 ? 's' : ''}`;
+    } else {
+      resultsCount.textContent = '';
+    }
+  }
+}
+
+function filterSector(sector) {
+  currentFilter = sector;
+  filterProducts();
+}
+
+/* ─── SEARCH FUNCTIONALITY ─────────────────────────────── */
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value.trim();
+    if (searchClear) {
+      searchClear.style.display = searchQuery ? 'block' : 'none';
+    }
+    filterProducts();
+  });
+}
+
+if (searchClear) {
+  searchClear.addEventListener('click', () => {
+    if (searchInput) {
+      searchInput.value = '';
+      searchQuery = '';
+      searchClear.style.display = 'none';
+      filterProducts();
+      searchInput.focus();
+    }
+  });
+}
+
+/* ─── FILTER BUTTON EVENT LISTENERS ───────────────────── */
+document.querySelectorAll('#browseFilters .filter-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    const filter = pill.getAttribute('data-filter');
+    filterSector(filter);
+  });
+});
+
+/* ─── PRODUCT CARD CLICK HANDLERS ─────────────────────── */
+document.querySelectorAll('#productGrid .product-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const productId = card.getAttribute('data-product-id');
+    if (productId) {
+      openModal(parseInt(productId));
+    }
+  });
+});
+
+/* ─── FOOTER FILTER LINKS ───────────────────────────────── */
+document.querySelectorAll('.footer-col ul a[data-filter-link]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const filter = link.getAttribute('data-filter-link');
+    localStorage.setItem('filterSector', filter);
+    window.location.href = 'products.html';
+  });
+});
 
 /* ─── FEATURED PRODUCT TABS SLIDER (CAROUSEL) ──────────── */
 let currentTab = 0;
@@ -304,17 +645,47 @@ function closeModal() {
   activeProductData = null;
 }
 
+/* ─── MODAL EVENT LISTENERS ─────────────────────────────── */
+const closeModalBtn = document.getElementById('closeModal');
+if (closeModalBtn) {
+  closeModalBtn.addEventListener('click', closeModal);
+}
+
+const modalOverlay = document.getElementById('productModal');
+if (modalOverlay) {
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) {
+      closeModal();
+    }
+  });
+}
+
 /* ─── INITIALIZATION ON RUNTIME ───────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  // Auth form submit handler
+  const authForm = document.getElementById('authForm');
+  if (authForm) {
+    authForm.addEventListener('submit', handleAuthSubmit);
+  }
+  
+  // Check auth status on page load
+  checkAuthStatus();
+  
   // Init hero tabs slider if on homepage
   if(document.querySelectorAll(".featured-slide").length > 0) {
     startTabAutoplay();
   }
   
-  // Handles cross-page sector filtering from footer links
-  const targetSector = localStorage.getItem('filterSector');
-  if (targetSector && document.getElementById('productGrid')) {
-    filterSector(targetSector);
-    localStorage.removeItem('filterSector'); // clear state token
+  // Initialize voting system if on products page
+  if (document.getElementById('productGrid')) {
+    loadProductsFromAPI(currentFilter);
+    
+    // Handles cross-page sector filtering from footer links
+    const targetSector = localStorage.getItem('filterSector');
+    if (targetSector) {
+      currentFilter = targetSector;
+      loadProductsFromAPI(targetFilter);
+      localStorage.removeItem('filterSector'); // clear state token
+    }
   }
 });

@@ -29,14 +29,17 @@
         <li><a href="index.html#about">About Me</a></li>
         <li><a href="index.html#contact">Contact</a></li>
       </ul>
+      <div id="authNavContainer">
+        <!-- Auth button will be inserted here by JS -->
+      </div>
       <a href="products.html" class="nav-cta">Explore Products</a>
-      <div class="hamburger" onclick="toggleMenu()">
+      <div class="hamburger" id="hamburger">
         <span></span><span></span><span></span>
       </div>
     </div>
   </nav>
 
-  <!-- MOVED CATALOG CONTAINER -->
+  <!-- CATALOG CONTAINER -->
   <section id="products" class="catalog-section">
     <div class="container">
       <div class="section-header">
@@ -45,134 +48,37 @@
         <p>Support sustainable livelihoods by purchasing fully authentic native essentials directly managed by regional clusters.</p>
       </div>
 
+      <!-- SEARCH BAR -->
+      <div class="search-container">
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="searchInput" placeholder="Search products by name, origin, or description..." autocomplete="off">
+          <button class="search-clear" id="searchClear" style="display: none;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="search-results-count" id="searchResultsCount"></div>
+      </div>
+
+      <!-- FILTER BUTTONS -->
       <div class="browse-strip-container" id="browseFilters">
-        <button class="filter-pill active" onclick="filterSector('all')"><i class="fas fa-border-all"></i> All Sectors</button>
-        <button class="filter-pill" onclick="filterSector('home')"><i class="fas fa-couch"></i> Home Goods</button>
-        <button class="filter-pill" onclick="filterSector('apparel')"><i class="fas fa-tshirt"></i> Apparel</button>
-        <button class="filter-pill" onclick="filterSector('pantry')"><i class="fas fa-utensils"></i> Pantry Items</button>
-        <button class="filter-pill" onclick="filterSector('decor')"><i class="fas fa-shapes"></i> Decor/Handicrafts</button>
+        <button class="filter-pill active" data-filter="all"><i class="fas fa-border-all"></i> All</button>
+        <button class="filter-pill" data-filter="popular"><i class="fas fa-star"></i> Popular</button>
+        <button class="filter-pill" data-filter="home"><i class="fas fa-couch"></i> Home Goods</button>
+        <button class="filter-pill" data-filter="apparel"><i class="fas fa-tshirt"></i> Apparel</button>
+        <button class="filter-pill" data-filter="pantry"><i class="fas fa-utensils"></i> Pantry Items</button>
+        <button class="filter-pill" data-filter="decor"><i class="fas fa-shapes"></i> Decor/Handicrafts</button>
       </div>
 
       <div class="product-grid" id="productGrid">
-        <div class="product-card" data-sector="home" onclick="openModal(1)">
-          <div class="product-card-image">
-            <img src="https://placehold.co/400x300/2B1F17/C9A97A?text=Burnay+Glass" alt="Burnay Drinking Glass">
-            <span class="product-card-tag home">Home Goods</span>
-          </div>
-          <div class="product-card-content">
-            <div class="product-card-origin">Vigan, Ilocos Sur</div>
-            <h3>Burnay Drinking Glass</h3>
-            <p class="product-card-desc">Handblown from premium recycled silica compounds by Ilocano craft leaders.</p>
-            <div class="product-card-footer">
-              <span class="product-card-action">View Breakdown →</span>
-            </div>
-          </div>
-        </div>
+        <!-- Products will be loaded dynamically from API -->
+      </div>
 
-        <div class="product-card" data-sector="home" onclick="openModal(4)">
-          <div class="product-card-image">
-            <img src="https://placehold.co/400x300/2B1F17/C9A97A?text=Banig+Mat" alt="Basey Banig Mat">
-            <span class="product-card-tag home">Home Goods</span>
-          </div>
-          <div class="product-card-content">
-            <div class="product-card-origin">Basey, Samar</div>
-            <h3>Basey Banig Mat</h3>
-            <p class="product-card-desc">Traditional mats handcrafted from dyed tikog reeds for a rustic native look.</p>
-            <div class="product-card-footer">
-              <span class="product-card-action">View Breakdown →</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-card" data-sector="apparel" onclick="openModal(2)">
-          <div class="product-card-image">
-            <img src="https://placehold.co/400x300/2B1F17/C9A97A?text=Pi%C3%B1a+Shirt" alt="Piña Weave T-Shirt">
-            <span class="product-card-tag apparel">Apparel</span>
-          </div>
-          <div class="product-card-content">
-            <div class="product-card-origin">Kalibo, Aklan</div>
-            <h3>Piña Weave T-Shirt</h3>
-            <p class="product-card-desc">Delicately interlaced pineapple plant fiber providing top-tier cooling traits.</p>
-            <div class="product-card-footer">
-              <span class="product-card-action">View Breakdown →</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-card" data-sector="pantry" onclick="openModal(3)">
-          <div class="product-card-image">
-            <img src="https://placehold.co/400x300/2B1F17/C9A97A?text=Sukang+Iloko" alt="Sukang Iloko">
-            <span class="product-card-tag pantry">Pantry Items</span>
-          </div>
-          <div class="product-card-content">
-            <div class="product-card-origin">Ilocos Region</div>
-            <h3>Sukang Iloko</h3>
-            <p class="product-card-desc">Naturally fermented sugarcane vinegar infused with native leaves and spices.</p>
-            <div class="product-card-footer">
-              <span class="product-card-action">View Breakdown →</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-card" data-sector="decor" onclick="openModal(5)">
-          <div class="product-card-image">
-            <img src="https://placehold.co/400x300/2B1F17/C4522A?text=Capiz+Lantern" alt="Capiz Shell Lotus Lantern">
-            <span class="product-card-tag decor">Decor/Handicrafts</span>
-          </div>
-          <div class="product-card-content">
-            <div class="product-card-origin">Samal, Bataan</div>
-            <h3>Capiz Shell Lotus Lantern</h3>
-            <p class="product-card-desc">Hand-cut marine windowpane oyster shells framed neatly into warm lotus light fixtures.</p>
-            <div class="product-card-footer">
-              <span class="product-card-action">View Breakdown →</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-card" data-sector="decor" onclick="openModal(6)">
-          <div class="product-card-image">
-            <img src="https://placehold.co/400x300/2B1F17/C4522A?text=Paete+Woodcarving" alt="Paete Wooden Table Sculpture">
-            <span class="product-card-tag decor">Decor/Handicrafts</span>
-          </div>
-          <div class="product-card-content">
-            <div class="product-card-origin">Paete, Laguna</div>
-            <h3>Paete Wooden Table Sculpture</h3>
-            <p class="product-card-desc">Finely chiseled local wood pieces depicting ancestral countryside farming activities.</p>
-            <div class="product-card-footer">
-              <span class="product-card-action">View Breakdown →</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-card" data-sector="decor" onclick="openModal(7)">
-          <div class="product-card-image">
-            <img src="https://placehold.co/400x300/2B1F17/C4522A?text=Abaca+Vase" alt="Handcrafted Abaca Basket Vase">
-            <span class="product-card-tag decor">Decor/Handicrafts</span>
-          </div>
-          <div class="product-card-content">
-            <div class="product-card-origin">Daraga, Albay</div>
-            <h3>Abaca Twine Basket Vase</h3>
-            <p class="product-card-desc">Heavy-duty dried banana stalk fibers coiled tightly into durable structural statement pieces.</p>
-            <div class="product-card-footer">
-              <span class="product-card-action">View Breakdown →</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-card" data-sector="decor" onclick="openModal(8)">
-          <div class="product-card-image">
-            <img src="https://placehold.co/400x300/2B1F17/C4522A?text=Filigree+Ornament" alt="Sorsogon Filigree Hanging Ornament">
-            <span class="product-card-tag decor">Decor/Handicrafts</span>
-          </div>
-          <div class="product-card-content">
-            <div class="product-card-origin">Sorsogon City</div>
-            <h3>Traditional Wire Filigree Ornament</h3>
-            <p class="product-card-desc">Intricate metallic silver wire weaves shaped by hand into native structural designs.</p>
-            <div class="product-card-footer">
-              <span class="product-card-action">View Breakdown →</span>
-            </div>
-          </div>
-        </div>
+      <!-- NO RESULTS MESSAGE -->
+      <div class="no-results" id="noResults" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>No products found</h3>
+        <p>Try adjusting your search or filter criteria</p>
       </div>
     </div>
   </section>
@@ -187,10 +93,10 @@
       <div class="footer-col">
         <h4>Sectors</h4>
         <ul>
-          <li><a href="products.html" onclick="localStorage.setItem('filterSector', 'home')">Home Goods</a></li>
-          <li><a href="products.html" onclick="localStorage.setItem('filterSector', 'apparel')">Apparel</a></li>
-          <li><a href="products.html" onclick="localStorage.setItem('filterSector', 'pantry')">Pantry Items</a></li>
-          <li><a href="products.html" onclick="localStorage.setItem('filterSector', 'decor')">Decor / Handicrafts</a></li>
+          <li><a href="products.html" data-filter-link="home">Home Goods</a></li>
+          <li><a href="products.html" data-filter-link="apparel">Apparel</a></li>
+          <li><a href="products.html" data-filter-link="pantry">Pantry Items</a></li>
+          <li><a href="products.html" data-filter-link="decor">Decor / Handicrafts</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -203,18 +109,45 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <div>&copy; 2026 Gawang Pinas. All rights reserved.</div>
+      <div>&​copy; 2026 Gawang Pinas. All rights reserved.</div>
       <div>Designed with Local Heritage.</div>
     </div>
   </footer>
 
   <!-- DETAIL MODAL FRAMEWORK -->
-  <div class="overlay" id="productModal" onclick="closeModal()">
-    <div class="modal" onclick="event.stopPropagation()">
-      <button class="close-btn" onclick="closeModal()">&times;</button>
+  <div class="overlay" id="productModal">
+    <div class="modal">
+      <button class="close-btn" id="closeModal">×</button>
       <div id="modalDynamicContent"></div>
       <div class="modal-tabs" id="modalTabsContainer"></div>
       <div class="modal-panel" id="modalPanelContent"></div>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div class="auth-overlay" id="authModal">
+    <div class="auth-modal">
+      <button class="auth-close-btn" onclick="closeAuthModal()">X</button>
+      <div class="auth-header">
+        <h2 id="authTitle">Login</h2>
+        <p id="authSubtitle">Sign in to vote on your favorite products</p>
+      </div>
+      <div id="authMessage"></div>
+      <form class="auth-form" id="authForm">
+        <div class="auth-form-group">
+          <label for="authEmail">Email</label>
+          <input type="email" id="authEmail" required placeholder="your@email.com">
+        </div>
+        <div class="auth-form-group">
+          <label for="authPassword">Password</label>
+          <input type="password" id="authPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="auth-submit-btn" id="authSubmitBtn" autocomplete="current-password">Login</button>
+      </form>
+      <div class="auth-switch">
+        <span id="authSwitchText">Don't have an account?</span>
+        <a href="#" onclick="toggleAuthMode()" id="authSwitchLink">Register</a>
+      </div>
     </div>
   </div>
 

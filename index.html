@@ -29,6 +29,9 @@
         <li><a href="#about">About Me</a></li>
         <li><a href="#contact" class="active">Contact</a></li>
       </ul>
+      <div id="authNavContainer">
+        <!-- Auth button will be inserted here by JS -->
+      </div>
       <a href="products.html" class="nav-cta">Explore Products</a>
       <div class="hamburger" onclick="toggleMenu()">
         <span></span><span></span><span></span>
@@ -196,7 +199,7 @@
         <div class="about-info">
           <span class="tag">About Me</span>
           <h2>The Developer Behind Gawang Pinas</h2>
-          <p>Hello, I’m Leo, an Information Technology graduate from the Philippines with a passion for web development, digital innovation, and creating meaningful online experiences...</p>
+          <p>Hello, I'm Leo, an Information Technology graduate from the Philippines with a passion for web development, digital innovation, and creating meaningful online experiences...</p>
           <p>Through this project, I aim to combine technology and local heritage...</p>
         </div>
         <div class="about-skills">
@@ -250,7 +253,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <div>&copy; 2026 Gawang Pinas. All rights reserved.</div>
+      <div>&​copy; 2026 Gawang Pinas. All rights reserved.</div>
       <div>Designed with Local Heritage.</div>
     </div>
   </footer>
@@ -258,10 +261,37 @@
   <!-- LIGHTBOX MODAL LAYER -->
   <div class="overlay" id="productModal" onclick="closeModal()">
     <div class="modal" onclick="event.stopPropagation()">
-      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <button class="close-btn" onclick="closeModal()">X</button>
       <div id="modalDynamicContent"></div>
       <div class="modal-tabs" id="modalTabsContainer"></div>
       <div class="modal-panel" id="modalPanelContent"></div>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div class="auth-overlay" id="authModal">
+    <div class="auth-modal">
+      <button class="auth-close-btn" onclick="closeAuthModal()">X</button>
+      <div class="auth-header">
+        <h2 id="authTitle">Login</h2>
+        <p id="authSubtitle">Sign in to vote on your favorite products</p>
+      </div>
+      <div id="authMessage"></div>
+      <form class="auth-form" id="authForm">
+        <div class="auth-form-group">
+          <label for="authEmail">Email</label>
+          <input type="email" id="authEmail" required placeholder="your@email.com">
+        </div>
+        <div class="auth-form-group">
+          <label for="authPassword">Password</label>
+          <input type="password" id="authPassword" required placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button type="submit" class="auth-submit-btn" id="authSubmitBtn">Login</button>
+      </form>
+      <div class="auth-switch">
+        <span id="authSwitchText">Don't have an account?</span>
+        <a href="#" onclick="toggleAuthMode()" id="authSwitchLink">Register</a>
+      </div>
     </div>
   </div>
 

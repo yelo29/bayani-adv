@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gawang Pinas — Proudly Filipino Products</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="video-background">
+    <video autoplay muted loop playsinline>
+      <source src="15274723_1920_1080_24fps_ph_flag.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Gawang <span>Pinas</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#products" class="active">Products</a></li>
+        <li><a href="#story">Our Story</a></li>
+        <li><a href="#about">About Me</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#products" class="nav-cta">Explore Products</a>
+      <div class="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow">Proudly Filipino</div>
+        <h1>Made Here.<br><em>Loved Everywhere.</em></h1>
+        <p class="hero-sub">Discover the best locally-made Filipino products — from home essentials and handwoven crafts to homegrown fashion and authentic food.</p>
+        <div class="hero-btns">
+          <a href="#products" class="btn-primary">Browse Products</a>
+          <a href="#story" class="btn-outline">Our Story</a>
+        </div>
+        <div class="hero-stats">
+          <div><div class="hero-stat-num"><i class="fas fa-boxes"></i> 120+</div><div class="hero-stat-label">Local products</div></div>
+          <div><div class="hero-stat-num"><i class="fas fa-map"></i> 14</div><div class="hero-stat-label">Regions covered</div></div>
+          <div><div class="hero-stat-num"><i class="fas fa-users"></i> 60+</div><div class="hero-stat-label">Filipino makers</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card tall">
+          <h3>Handwoven Crafts</h3>
+          <p>Passed down through generations, each piece tells a story of Filipino artisanship.</p>
+          <div class="hero-card-meta">Crafts & Heritage</div>
+        </div>
+        <div class="hero-card">
+          <h3>Native Flavors</h3>
+          <p>Authentic tastes from across the archipelago.</p>
+          <div class="hero-card-meta">Food & Beverage</div>
+        </div>
+        <div class="hero-card">
+          <h3>Local Threads</h3>
+          <p>Wear your roots proudly.</p>
+          <div class="hero-card-meta">Fashion</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee-band">
+    <div class="marquee-track">
+      <span class="marquee-item">Gawa sa Pilipinas</span>
+      <span class="marquee-item">Home & Kitchen</span>
+      <span class="marquee-item">Fashion & Clothing</span>
+      <span class="marquee-item">Food & Beverages</span>
+      <span class="marquee-item">Crafts & Handmade</span>
+      <span class="marquee-item">Support Local</span>
+      <span class="marquee-item">Proudly Filipino</span>
+      <span class="marquee-item">Gawa sa Pilipinas</span>
+      <span class="marquee-item">Home & Kitchen</span>
+      <span class="marquee-item">Fashion & Clothing</span>
+      <span class="marquee-item">Food & Beverages</span>
+      <span class="marquee-item">Crafts & Handmade</span>
+      <span class="marquee-item">Support Local</span>
+      <span class="marquee-item">Proudly Filipino</span>
+    </div>
+  </div>
+
+  <section class="featured-tabs">
+    <div class="featured-tabs-container">
+      <div class="featured-tabs-header">
+        <h2>Featured Products</h2>
+        <p>Discover our handpicked selection of exceptional Filipino craftsmanship</p>
+      </div>
+      <div class="tab-navigation" id="tabNav">
+        <button class="tab-nav-btn active" data-tab="0">Burnay Glass</button>
+        <button class="tab-nav-btn" data-tab="1">Piña Weave</button>
+        <button class="tab-nav-btn" data-tab="2">Sukang Iloko</button>
+        <button class="tab-nav-btn" data-tab="3">Banig Mat</button>
+      </div>
+      <div class="featured-content" id="featuredContent">
+        <div class="featured-slide active" data-slide="0">
+          <div class="featured-slide-inner">
+            <div class="featured-image">
+              <img src="https://placehold.co/600x400/F5F0E8/5C3D2E?text=Burnay+Glass" alt="Burnay Drinking Glass">
+            </div>
+            <div class="featured-details">
+              <span class="tag home">Home Goods</span>
+              <h3>Burnay Drinking Glass</h3>
+              <div class="origin"><i class="fas fa-map-marker-alt"></i> Vigan, Ilocos Sur</div>
+              <p>Handblown from recycled glass by Ilocano artisans, each piece has a unique character. Dishwasher safe and beautifully imperfect.</p>
+              <a href="#" class="featured-cta" onclick="openModal(1); return false;">View Details →</a>
+            </div>
+          </div>
+        </div>
+        <div class="featured-slide" data-slide="1">
+          <div class="featured-slide-inner">
+            <div class="featured-image">
+              <img src="https://placehold.co/600x400/F5F0E8/5C3D2E?text=Pi%C3%B1a+Weave" alt="Piña Weave T-Shirt">
+            </div>
+            <div class="featured-details">
+              <span class="tag fashion">Apparel</span>
+              <h3>Piña Weave T-Shirt</h3>
+              <div class="origin"><i class="fas fa-map-marker-alt"></i> Kalibo, Aklan</div>
+              <p>Woven delicately from premium pineapple fibers combined with light local cotton weaves.</p>
+              <a href="#" class="featured-cta" onclick="openModal(2); return false;">View Details →</a>
+            </div>
+          </div>
+        </div>
+        <div class="featured-slide" data-slide="2">
+          <div class="featured-slide-inner">
+            <div class="featured-image">
+              <img src="https://placehold.co/600x400/F5F0E8/5C3D2E?text=Sukang+Iloko" alt="Sukang Iloko">
+            </div>
+            <div class="featured-details">
+              <span class="tag food">Pantry Items</span>
+              <h3>Sukang Iloko</h3>
+              <div class="origin"><i class="fas fa-map-marker-alt"></i> Ilocos Region</div>
+              <p>Naturally fermented sugarcane vinegar infused with local samak leaves and traditional spices.</p>
+              <a href="#" class="featured-cta" onclick="openModal(3); return false;">View Details →</a>
+            </div>
+          </div>
+        </div>
+        <div class="featured-slide" data-slide="3">
+          <div class="featured-slide-inner">
+            <div class="featured-image">
+              <img src="https://placehold.co/600x400/F5F0E8/5C3D2E?text=Banig+Mat" alt="Banig Mat">
+            </div>
+            <div class="featured-details">
+              <span class="tag crafts">Home Goods</span>
+              <h3>Basey Banig Mat</h3>
+              <div class="origin"><i class="fas fa-map-marker-alt"></i> Basey, Samar</div>
+              <p>Intricately handwoven reed mats featuring unique geometric and floral community designs.</p>
+              <a href="#" class="featured-cta" onclick="openModal(4); return false;">View Details →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-indicators">
+        <div class="tab-indicator active" data-slide="0"></div>
+        <div class="tab-indicator" data-slide="1"></div>
+        <div class="tab-indicator" data-slide="2"></div>
+        <div class="tab-indicator" data-slide="3"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="products" class="products">
+    <div class="container">
+      <div class="section-header">
+        <span class="tag">Catalog</span>
+        <h2>Explore Our Treasures</h2>
+        <p>Every purchase directly supports local artisans and preserves traditional Filipino industries.</p>
+      </div>
+
+      <div class="browse-strip-container" id="browseFilters">
+        <button class="filter-pill active" onclick="filterSector('all')"><i class="fas fa-th-large"></i> All Sectors</button>
+        <button class="filter-pill" onclick="filterSector('home')"><i class="fas fa-home"></i> Home Goods</button>
+        <button class="filter-pill" onclick="filterSector('apparel')"><i class="fas fa-tshirt"></i> Apparel</button>
+        <button class="filter-pill" onclick="filterSector('pantry')"><i class="fas fa-utensils"></i> Pantry Items</button>
+      </div>
+
+      <div class="product-grid" id="productGrid">
+        <div class="product-card" data-sector="home" onclick="openModal(1)">
+          <div class="product-img">
+            <div class="product-img-bg"></div>
+            <span class="product-badge">Popular</span>
+            <img src="https://placehold.co/400x300/2B1F17/C9A97A?text=Burnay+Glass" alt="Burnay Glass">
+          </div>
+          <div class="product-body">
+            <div class="product-origin"><i class="fas fa-map-marker-alt"></i> Ilocos Sur, Philippines</div>
+            <h4 class="product-name">Burnay Drinking Glass</h4>
+            <p class="product-desc">Eco-friendly handblown glasses crafted using traditional furnace methodologies.</p>
+            <div class="product-footer">
+              <span class="product-discover">Learn More →</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-sector="apparel" onclick="openModal(2)">
+          <div class="product-img">
+            <div class="product-img-bg"></div>
+            <img src="https://placehold.co/400x300/2B1F17/C9A97A?text=Pi%C3%B1a+Weave" alt="Piña shirt">
+          </div>
+          <div class="product-body">
+            <div class="product-origin"><i class="fas fa-map-marker-alt"></i> Aklan, Philippines</div>
+            <h4 class="product-name">Piña Weave T-Shirt</h4>
+            <p class="product-desc">Heritage meets daily comfort with breathable pineapple-leaf textiles.</p>
+            <div class="product-footer">
+              <span class="product-discover">Learn More →</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-sector="pantry" onclick="openModal(3)">
+          <div class="product-img">
+            <div class="product-img-bg"></div>
+            <img src="https://placehold.co/400x300/2B1F17/C9A97A?text=Sukang+Iloko" alt="Sukang Iloko">
+          </div>
+          <div class="product-body">
+            <div class="product-origin"><i class="fas fa-map-marker-alt"></i> Ilocos, Philippines</div>
+            <h4 class="product-name">Traditional Sukang Iloko</h4>
+            <p class="product-desc">Rich, dark, and perfectly aged naturally-brewed native condiment essentials.</p>
+            <div class="product-footer">
+              <span class="product-discover">Learn More →</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-sector="home" onclick="openModal(4)">
+          <div class="product-img">
+            <div class="product-img-bg"></div>
+            <img src="https://placehold.co/400x300/2B1F17/C9A97A?text=Banig+Mat" alt="Banig Mat">
+          </div>
+          <div class="product-body">
+            <div class="product-origin"><i class="fas fa-map-marker-alt"></i> Basey, Samar, Philippines</div>
+            <h4 class="product-name">Basey Banig Mat</h4>
+            <p class="product-desc">Beautiful custom woven decorative mats constructed by seasoned local masters.</p>
+            <div class="product-footer">
+              <span class="product-discover">Learn More →</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="story" class="story-band">
+    <div class="story-inner">
+      <div>
+        <span class="story-eyebrow">Our Shared Mission</span>
+        <h2>Preserving the Art of <em>Handmade Heritage</em></h2>
+        <p>Gawang Pinas brings local, authentic art forms straight from native heritage hubs right to digital spaces, making sure ancestral traditions can adapt and thrive modernly.</p>
+        <p>We work directly alongside weaving associations and independent regional food makers to optimize supply steps without changing centuries-old foundations.</p>
+        <div class="story-stats">
+          <div class="story-stat">
+            <div class="story-stat-num">100%</div>
+            <div class="story-stat-label">Direct Trade Returns</div>
+          </div>
+          <div class="story-stat">
+            <div class="story-stat-num">14+</div>
+            <div class="story-stat-label">Active Communities Supported</div>
+          </div>
+        </div>
+      </div>
+      <div class="story-visual">
+        <div class="story-pillars">
+          <div class="pillar">
+            <div class="pillar-icon"><i class="fas fa-seedling"></i></div>
+            <div>
+              <h5 class="pillar-title">Sustainably Harvested Materials</h5>
+              <p class="pillar-text">All elements are grown, gathered, and treated following safe, local agricultural guidelines.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon"><i class="fas fa-urn"></i></div>
+            <div>
+              <h5 class="pillar-title">Preserved Craft Linage</h5>
+              <p class="pillar-text">Supporting master craftsmen who pass essential techniques onto new generations of makers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about-me-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="tag">The Developer</span>
+        <h2>About the Creator</h2>
+        <p>Building high-performing digital environments and supporting technical solutions behind the scene.</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-profile">
+          <h3>Information Technology Professional</h3>
+          <div class="subtitle">System & Technical Focus</div>
+          <p class="about-bio">
+            A driven Information Technology professional dedicated to mastering infrastructure maintenance, troubleshooting, and environmental optimization. Combines practical full-stack and mobile application development with a strong focus on core technical support, operating systems, and network reliability.
+          </p>
+          <ul class="about-meta-list">
+            <li><span>Based In:</span> <span>Philippines</span></li>
+            <li><span>Core Target:</span> <span>IT Support & Systems Infrastructure</span></li>
+            <li><span>Development Track:</span> <span>Flutter, Supabase, VS Code</span></li>
+            <li><span>Project Leadership:</span> <span>Capstone Leader & Sole Developer</span></li>
+          </ul>
+        </div>
+        <div class="about-details">
+          <h4>Technical Proficiency</h4>
+          <div class="about-cards-grid">
+            <div class="about-skill-card">
+              <h5>IT Support & Hardware</h5>
+              <p>Experienced in diagnosing hardware environments, setting up system devices, and maintaining reliable workstation configurations.</p>
+            </div>
+            <div class="about-skill-card">
+              <h5>Networking Basics</h5>
+              <p>Hands-on capabilities in standard operations including networking hardware maintenance, setups, and manual network cable crimping tasks.</p>
+            </div>
+            <div class="about-skill-card">
+              <h5>Mobile & System Dev</h5>
+              <p>Skilled in modern mobile development using Flutter framework alongside scalable backend setups with Supabase configurations.</p>
+            </div>
+            <div class="about-skill-card">
+              <h5>Project Delivery</h5>
+              <p>Demonstrated capability to orchestrate complete full-stack tasks from baseline system engineering down to direct execution steps.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact-section">
+    <div class="contact-inner">
+      <h2>Let's Collaborate</h2>
+      <p>Interested in local product partnerships, platform support, or technical integration systems? Get in touch today.</p>
+      <a href="https://yelo29.github.io/leo2930port/" class="contact-btn">Reach Out Now</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo"><span>Gawang</span> Pinas</div>
+        <p>Preserving ancestral stories through premium local digital commerce reach.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Sectors</h4>
+        <ul>
+          <li><a href="#products" onclick="filterSector('home')">Home Goods</a></li>
+          <li><a href="#products" onclick="filterSector('apparel')">Apparel</a></li>
+          <li><a href="#products" onclick="filterSector('pantry')">Pantry Items</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#story">Our Story</a></li>
+          <li><a href="#about">About Me</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>&copy; 2026 Gawang Pinas. All rights reserved.</div>
+      <div>Designed with Local Heritage.</div>
+    </div>
+  </footer>
+
+  <div class="overlay" id="productModal" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div id="modalDynamicContent"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,18 +1,18 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/classes/Database.php';
+
 $host = 'sql113.infinityfree.com';
 $dbname = 'if0_42059838_gawang_pinas';
 $username = 'if0_42059838';
 $password = 'warframeyareli';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch(PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+// Initialize Database class (Encapsulation)
+$db = new Database($host, $dbname, $username, $password);
+
+// Get PDO connection for backward compatibility
+$pdo = $db->getConnection();
 
 // Get current user ID from session
 function getUserId() {

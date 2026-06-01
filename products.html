@@ -29,9 +29,12 @@
         <li><a href="index.html#story">Our Story</a></li>
         <li><a href="index.html#about">About Me</a></li>
         <li><a href="index.html#contact">Contact</a></li>
+        <li id="authNavContainerMobile">
+          <!-- Auth button will be inserted here by JS for mobile -->
+        </li>
       </ul>
       <div id="authNavContainer">
-        <!-- Auth button will be inserted here by JS -->
+        <!-- Auth button will be inserted here by JS for desktop -->
       </div>
       <a href="products.html" class="nav-cta">Explore Products</a>
       <div class="hamburger" id="hamburger">
@@ -143,13 +146,13 @@
       <form class="auth-form" id="authForm">
         <div class="auth-form-group">
           <label for="authEmail">Email</label>
-          <input type="email" id="authEmail" required placeholder="your@email.com">
+          <input type="email" id="authEmail" required placeholder="your@email.com" autocomplete="username">
         </div>
         <div class="auth-form-group">
           <label for="authPassword">Password</label>
-          <input type="password" id="authPassword" required placeholder="••••••••">
+          <input type="password" id="authPassword" required placeholder="••••••••" autocomplete="current-password">
         </div>
-        <button type="submit" class="auth-submit-btn" id="authSubmitBtn" autocomplete="current-password">Login</button>
+        <button type="submit" class="auth-submit-btn" id="authSubmitBtn">Login</button>
       </form>
       <div class="auth-switch">
         <span id="authSwitchText">Don't have an account?</span>

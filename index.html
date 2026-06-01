@@ -29,9 +29,12 @@
         <li><a href="#story">Our Story</a></li>
         <li><a href="#about">About Me</a></li>
         <li><a href="#contact" class="active">Contact</a></li>
+        <li id="authNavContainerMobile">
+          <!-- Auth button will be inserted here by JS for mobile -->
+        </li>
       </ul>
       <div id="authNavContainer">
-        <!-- Auth button will be inserted here by JS -->
+        <!-- Auth button will be inserted here by JS for desktop -->
       </div>
       <a href="products.html" class="nav-cta">Explore Products</a>
       <div class="hamburger" onclick="toggleMenu()">
@@ -211,7 +214,7 @@
   <!-- AUTH MODAL -->
   <div class="auth-overlay" id="authModal">
     <div class="auth-modal">
-      <button class="auth-close-btn" onclick="closeAuthModal()">X</button>
+      <button class="auth-close-btn" onclick="closeAuthModal()">×</button>
       <div class="auth-header">
         <h2 id="authTitle">Login</h2>
         <p id="authSubtitle">Sign in to vote on your favorite products</p>
@@ -220,7 +223,7 @@
       <form class="auth-form" id="authForm">
         <div class="auth-form-group">
           <label for="authEmail">Email</label>
-          <input type="email" id="authEmail" required placeholder="your@email.com">
+          <input type="email" id="authEmail" required placeholder="your@email.com" autocomplete="username">
         </div>
         <div class="auth-form-group">
           <label for="authPassword">Password</label>

@@ -37,19 +37,27 @@ function checkAuthStatus() {
 
 function updateAuthNav(loggedIn, userEmail) {
   const container = document.getElementById('authNavContainer');
+  const containerMobile = document.getElementById('authNavContainerMobile');
+  
   if (!container) return;
   
   if (loggedIn && userEmail) {
-    container.innerHTML = `
+    const userHtml = `
       <div class="user-info">
         <span class="user-email">${userEmail}</span>
         <button class="logout-btn" onclick="handleLogout()">Logout</button>
       </div>
     `;
+    container.innerHTML = userHtml;
+    if (containerMobile) {
+      containerMobile.innerHTML = userHtml;
+    }
   } else {
-    container.innerHTML = `
-      <button class="auth-nav-btn" onclick="openAuthModal()">Login</button>
-    `;
+    const loginHtml = `<button class="auth-nav-btn" onclick="openAuthModal()">Login</button>`;
+    container.innerHTML = loginHtml;
+    if (containerMobile) {
+      containerMobile.innerHTML = loginHtml;
+    }
   }
 }
 

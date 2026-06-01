@@ -3,10 +3,10 @@ session_start();
 
 require_once __DIR__ . '/classes/Database.php';
 
-$host = 'sql113.infinityfree.com';
-$dbname = 'if0_42059838_gawang_pinas';
-$username = 'if0_42059838';
-$password = 'warframeyareli';
+$host = 'host';
+$dbname = 'gawang_pinas';
+$username = 'root';
+$password = '';
 
 // Initialize Database class (Encapsulation)
 $db = new Database($host, $dbname, $username, $password);

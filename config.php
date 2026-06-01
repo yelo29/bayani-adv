@@ -4,7 +4,7 @@ session_start();
 require_once __DIR__ . '/classes/Database.php';
 
 $host = 'host';
-$dbname = 'gawang_pinas';
+$dbname = 'database_name';
 $username = 'root';
 $password = '';
 

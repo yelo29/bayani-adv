@@ -536,11 +536,11 @@ function switchModalTab(tabElement, tabType) {
   if (tabType === 'overview') {
     panel.innerHTML = `<p>${activeProductData.description}</p>`;
   } else if (tabType === 'history') {
-    panel.innerHTML = `<p>This product represents the rich heritage of Filipino craftsmanship. Each piece is created using traditional techniques passed down through generations, preserving our cultural identity.</p>`;
+    panel.innerHTML = `<p>${activeProductData.heritage_story || 'No heritage story available for this product.'}</p>`;
   } else if (tabType === 'where') {
-    panel.innerHTML = `<p>Available through local artisan collectives and regional craft markets across the Philippines. Support local makers and help preserve our traditional crafts.</p>`;
+    panel.innerHTML = `<p>${activeProductData.where_to_find || 'No location information available for this product.'}</p>`;
   } else if (tabType === 'dyk') {
-    panel.innerHTML = `<p><i class="fas fa-lightbulb" style="color:var(--gold); margin-right:6px;"></i> Each product is unique, with slight variations that reflect the handmade nature and individual artisan's touch.</p>`;
+    panel.innerHTML = `<p><i class="fas fa-lightbulb" style="color:var(--gold); margin-right:6px;"></i> ${activeProductData.did_you_know || 'No additional facts available for this product.'}</p>`;
   } else if (tabType === 'details') {
     panel.innerHTML = `
       <table class="specs-tbl">

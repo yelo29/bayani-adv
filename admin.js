@@ -155,6 +155,9 @@ async function openEditModal(id) {
     document.getElementById('tag_class').value = product.tag_class;
     document.getElementById('sector').value = product.sector;
     document.getElementById('description').value = product.description;
+    document.getElementById('heritage_story').value = product.heritage_story || '';
+    document.getElementById('where_to_find').value = product.where_to_find || '';
+    document.getElementById('did_you_know').value = product.did_you_know || '';
     
     // Show current image preview
     const preview = document.getElementById('imagePreview');
@@ -192,6 +195,9 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
   formData.append('tag_class', document.getElementById('tag_class').value);
   formData.append('sector', document.getElementById('sector').value);
   formData.append('description', document.getElementById('description').value);
+  formData.append('heritage_story', document.getElementById('heritage_story').value);
+  formData.append('where_to_find', document.getElementById('where_to_find').value);
+  formData.append('did_you_know', document.getElementById('did_you_know').value);
   
   const imageInput = document.getElementById('image');
   if (imageInput.files.length > 0) {

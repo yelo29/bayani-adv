@@ -40,7 +40,10 @@ switch($action) {
             'tag' => $_POST['tag'] ?? '',
             'tag_class' => $_POST['tag_class'] ?? '',
             'sector' => $_POST['sector'] ?? '',
-            'description' => $_POST['description'] ?? ''
+            'description' => $_POST['description'] ?? '',
+            'heritage_story' => $_POST['heritage_story'] ?? '',
+            'where_to_find' => $_POST['where_to_find'] ?? '',
+            'did_you_know' => $_POST['did_you_know'] ?? ''
         ];
         $imageFile = $_FILES['image'] ?? null;
         $result = $productManager->add($data, $imageFile);
@@ -55,7 +58,10 @@ switch($action) {
             'tag' => $_POST['tag'] ?? '',
             'tag_class' => $_POST['tag_class'] ?? '',
             'sector' => $_POST['sector'] ?? '',
-            'description' => $_POST['description'] ?? ''
+            'description' => $_POST['description'] ?? '',
+            'heritage_story' => $_POST['heritage_story'] ?? '',
+            'where_to_find' => $_POST['where_to_find'] ?? '',
+            'did_you_know' => $_POST['did_you_know'] ?? ''
         ];
         $imageFile = $_FILES['image'] ?? null;
         $result = $productManager->update($id, $data, $imageFile);

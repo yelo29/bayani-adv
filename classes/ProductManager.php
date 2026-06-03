@@ -12,7 +12,7 @@ class ProductManager {
     }
 
     public function getAll($sector = 'all') {
-        $sql = "SELECT id, title, origin, tag, tag_class, description, image_url, sector, vote_count 
+        $sql = "SELECT id, title, origin, tag, tag_class, description, image_url, sector, vote_count, heritage_story, where_to_find, did_you_know
                 FROM products";
 
         if ($sector !== 'all') {
@@ -31,7 +31,7 @@ class ProductManager {
 
     public function getFeatured($limit = 4) {
         $limit = (int)$limit;
-        $sql = "SELECT id, title, origin, tag, tag_class, description, image_url, sector, vote_count 
+        $sql = "SELECT id, title, origin, tag, tag_class, description, image_url, sector, vote_count, heritage_story, where_to_find, did_you_know
                 FROM products 
                 ORDER BY vote_count DESC 
                 LIMIT {$limit}";
@@ -67,8 +67,8 @@ class ProductManager {
 
         try {
             $this->db->execute(
-                "INSERT INTO products (title, origin, tag, tag_class, description, image_url, sector, vote_count) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, 0)",
+                "INSERT INTO products (title, origin, tag, tag_class, description, image_url, sector, vote_count, heritage_story, where_to_find, did_you_know) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)",
                 [
                     $data['title'],
                     $data['origin'],
@@ -76,7 +76,10 @@ class ProductManager {
                     $data['tag_class'],
                     $data['description'],
                     $imageUrl,
-                    $data['sector']
+                    $data['sector'],
+                    $data['heritage_story'] ?? '',
+                    $data['where_to_find'] ?? '',
+                    $data['did_you_know'] ?? ''
                 ]
             );
 
@@ -115,7 +118,7 @@ class ProductManager {
             }
 
             $this->db->execute(
-                "UPDATE products SET title = ?, origin = ?, tag = ?, tag_class = ?, description = ?, image_url = ?, sector = ? WHERE id = ?",
+                "UPDATE products SET title = ?, origin = ?, tag = ?, tag_class = ?, description = ?, image_url = ?, sector = ?, heritage_story = ?, where_to_find = ?, did_you_know = ? WHERE id = ?",
                 [
                     $data['title'],
                     $data['origin'],
@@ -124,6 +127,9 @@ class ProductManager {
                     $data['description'],
                     $imageUrl,
                     $data['sector'],
+                    $data['heritage_story'] ?? '',
+                    $data['where_to_find'] ?? '',
+                    $data['did_you_know'] ?? '',
                     $id
                 ]
             );

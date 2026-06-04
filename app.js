@@ -182,7 +182,7 @@ function renderProductsFromAPI(products) {
   if (!grid) return;
   
   grid.innerHTML = products.map(product => `
-    <div class="product-card" data-sector="${product.sector}" data-popular="${product.vote_count > 0 ? 'true' : 'false'}" data-product-id="${product.id}">
+    <div class="product-card" data-category-slug="${product.category_slug || product.sector}" data-popular="${product.vote_count > 0 ? 'true' : 'false'}" data-product-id="${product.id}">
       <div class="product-card-image">
         <img src="${product.image_url}" alt="${product.title}">
         <span class="product-card-tag ${product.tag_class}">${product.tag}</span>
@@ -338,7 +338,7 @@ function filterProducts() {
   });
 
   cards.forEach(card => {
-    const sector = card.getAttribute('data-sector');
+    const categorySlug = card.getAttribute('data-category-slug');
     const isPopular = card.getAttribute('data-popular') === 'true';
     const title = card.querySelector('h3').textContent.toLowerCase();
     const origin = card.querySelector('.product-card-origin').textContent.toLowerCase();
@@ -350,7 +350,7 @@ function filterProducts() {
     } else if (currentFilter === 'popular') {
       matchesSector = isPopular;
     } else {
-      matchesSector = sector === currentFilter;
+      matchesSector = categorySlug === currentFilter;
     }
     
     let matchesSearch = true;
@@ -500,7 +500,7 @@ async function openModal(id) {
           <span class="tag ${data.tag_class}">${data.tag}</span>
           <h2>${data.title}</h2>
           <div class="origin"><i class="fas fa-map-marker-alt"></i> ${data.origin}</div>
-          <p>Proudly made by local craft groups using heirloom methods preserved through family lineages.</p>
+          <p>Proudly made by local groups using methods preserved through family lineages.</p>
         </div>
       </div>
     `;
@@ -583,6 +583,67 @@ document.querySelectorAll('.footer-col ul a[data-filter-link]').forEach(link => 
   });
 });
 
+/* ─── CATEGORY MANAGEMENT ───────────────────────────────── */
+async function loadCategories() {
+  try {
+    const response = await fetch(`${API_URL}?action=get_categories`);
+    const categories = await response.json();
+    populateCategoryFilters(categories);
+    populateFooterCategories(categories);
+  } catch (error) {
+    console.error('Error loading categories:', error);
+  }
+}
+
+function populateCategoryFilters(categories) {
+  const browseFilters = document.getElementById('browseFilters');
+  if (!browseFilters) return;
+
+  // Keep "All" and "Popular" buttons, add dynamic category buttons
+  let html = `
+    <button class="filter-pill active" data-filter="all"><i class="fas fa-border-all"></i> All</button>
+    <button class="filter-pill" data-filter="popular"><i class="fas fa-star"></i> Popular</button>
+  `;
+
+  categories.forEach(category => {
+    html += `
+      <button class="filter-pill" data-filter="${category.slug}"><i class="fas fa-tag"></i> ${category.name}</button>
+    `;
+  });
+
+  browseFilters.innerHTML = html;
+
+  // Re-attach event listeners
+  document.querySelectorAll('#browseFilters .filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const filter = pill.getAttribute('data-filter');
+      filterSector(filter);
+    });
+  });
+}
+
+function populateFooterCategories(categories) {
+  const footerUl = document.getElementById('footerCategories');
+  if (!footerUl) return;
+
+  let html = '';
+  categories.forEach(category => {
+    html += `<li><a href="products.html" data-filter-link="${category.slug}">${category.name}</a></li>`;
+  });
+
+  footerUl.innerHTML = html;
+
+  // Re-attach event listeners
+  document.querySelectorAll('#footerCategories a[data-filter-link]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const filter = link.getAttribute('data-filter-link');
+      localStorage.setItem('filterSector', filter);
+      window.location.href = 'products.html';
+    });
+  });
+}
+
 /* ─── INITIALIZATION ON RUNTIME ───────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   const authForm = document.getElementById('authForm');
@@ -591,6 +652,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   checkAuthStatus();
+  
+  // Load categories if on products page
+  if (document.getElementById('browseFilters')) {
+    loadCategories();
+  }
   
   // Load featured products if on homepage
   if (document.getElementById('featuredContent')) {

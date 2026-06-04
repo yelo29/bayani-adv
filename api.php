@@ -5,12 +5,14 @@ require_once 'config.php';
 require_once __DIR__ . '/classes/Customer.php';
 require_once __DIR__ . '/classes/Vote.php';
 require_once __DIR__ . '/classes/ProductManager.php';
+require_once __DIR__ . '/classes/CategoryManager.php';
 
 $action = $_GET['action'] ?? '';
 
 // Initialize classes (Encapsulation)
 $customer = new Customer($db);
 $productManager = new ProductManager($db);
+$categoryManager = new CategoryManager($db);
 
 switch($action) {
     case 'register':
@@ -45,6 +47,10 @@ switch($action) {
         break;
     case 'check_vote':
         checkVote($customer, $db);
+        break;
+    case 'get_categories':
+        $categories = $categoryManager->getAll();
+        echo json_encode($categories);
         break;
     default:
         echo json_encode(['error' => 'Invalid action']);

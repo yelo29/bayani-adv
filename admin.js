@@ -73,6 +73,7 @@ function showAdminPanel(email) {
   document.getElementById('loginOverlay').classList.add('hidden');
   document.getElementById('adminContent').classList.add('active');
   loadProducts();
+  loadCategories();
 }
 
 async function logout() {
@@ -133,6 +134,7 @@ function openAddModal() {
   document.getElementById('productId').value = '';
   document.getElementById('imagePreview').classList.remove('active');
   document.getElementById('productModal').classList.add('active');
+  loadCategories();
 }
 
 // Open edit modal
@@ -153,6 +155,7 @@ async function openEditModal(id) {
     document.getElementById('origin').value = product.origin;
     document.getElementById('tag').value = product.tag;
     document.getElementById('tag_class').value = product.tag_class;
+    document.getElementById('category_id').value = product.category_id || '';
     document.getElementById('sector').value = product.sector;
     document.getElementById('description').value = product.description;
     document.getElementById('heritage_story').value = product.heritage_story || '';
@@ -168,6 +171,7 @@ async function openEditModal(id) {
     document.getElementById('image').required = false;
     
     document.getElementById('productModal').classList.add('active');
+    loadCategories();
   } catch (error) {
     console.error('Error loading product:', error);
     showMessage('Error loading product', 'error');
@@ -193,6 +197,7 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
   formData.append('origin', document.getElementById('origin').value);
   formData.append('tag', document.getElementById('tag').value);
   formData.append('tag_class', document.getElementById('tag_class').value);
+  formData.append('category_id', document.getElementById('category_id').value);
   formData.append('sector', document.getElementById('sector').value);
   formData.append('description', document.getElementById('description').value);
   formData.append('heritage_story', document.getElementById('heritage_story').value);
@@ -282,5 +287,155 @@ document.getElementById('image').addEventListener('change', function(e) {
       preview.classList.add('active');
     }
     reader.readAsDataURL(file);
+  }
+});
+
+// ─── CATEGORY MANAGEMENT ─────────────────────────────────
+
+async function loadCategories() {
+  try {
+    const response = await fetch(`${ADMIN_API_URL}?action=get_categories`);
+    const categories = await response.json();
+    renderCategoriesTable(categories);
+    populateCategoryDropdown(categories);
+  } catch (error) {
+    console.error('Error loading categories:', error);
+  }
+}
+
+function renderCategoriesTable(categories) {
+  const tbody = document.getElementById('categoriesTableBody');
+  
+  if (categories.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No categories found</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = categories.map(category => `
+    <tr>
+      <td>${category.name}</td>
+      <td>${category.slug}</td>
+      <td>${category.description || '-'}</td>
+      <td>
+        <button class="btn-edit" onclick="editCategory(${category.id})">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <button class="btn-delete" onclick="deleteCategory(${category.id})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function populateCategoryDropdown(categories) {
+  const select = document.getElementById('category_id');
+  select.innerHTML = '<option value="">Select a category</option>';
+  
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category.id;
+    option.textContent = category.name;
+    select.appendChild(option);
+  });
+}
+
+function openCategoryModal() {
+  document.getElementById('categoryModalTitle').textContent = 'Manage Categories';
+  document.getElementById('categoryForm').reset();
+  document.getElementById('categoryId').value = '';
+  document.getElementById('categoryModal').classList.add('active');
+  loadCategories();
+}
+
+function closeCategoryModal() {
+  document.getElementById('categoryModal').classList.remove('active');
+  document.getElementById('categoryForm').reset();
+}
+
+async function editCategory(id) {
+  try {
+    const response = await fetch(`${ADMIN_API_URL}?action=get_categories`);
+    const categories = await response.json();
+    const category = categories.find(c => c.id === id);
+    
+    if (!category) {
+      showMessage('Category not found', 'error');
+      return;
+    }
+    
+    document.getElementById('categoryId').value = category.id;
+    document.getElementById('categoryName').value = category.name;
+    document.getElementById('categorySlug').value = category.slug;
+    document.getElementById('categoryDescription').value = category.description || '';
+    
+    document.getElementById('categoryModal').classList.add('active');
+  } catch (error) {
+    console.error('Error loading category:', error);
+    showMessage('Error loading category', 'error');
+  }
+}
+
+async function deleteCategory(id) {
+  if (!confirm('Are you sure you want to delete this category?')) {
+    return;
+  }
+  
+  try {
+    const formData = new FormData();
+    formData.append('id', id);
+    
+    const response = await fetch(`${ADMIN_API_URL}?action=delete_category`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showMessage(result.message, 'success');
+      loadCategories();
+    } else {
+      showMessage(result.error, 'error');
+    }
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    showMessage('Error deleting category', 'error');
+  }
+}
+
+// Category form submission
+document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const id = document.getElementById('categoryId').value;
+  const data = {
+    name: document.getElementById('categoryName').value,
+    slug: document.getElementById('categorySlug').value,
+    description: document.getElementById('categoryDescription').value
+  };
+  
+  const action = id ? 'update_category' : 'add_category';
+  
+  try {
+    const response = await fetch(`${ADMIN_API_URL}?action=${action}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showMessage(result.message, 'success');
+      document.getElementById('categoryForm').reset();
+      document.getElementById('categoryId').value = '';
+      loadCategories();
+    } else {
+      showMessage(result.error, 'error');
+    }
+  } catch (error) {
+    console.error('Error saving category:', error);
+    showMessage('Error saving category', 'error');
   }
 });

@@ -12,14 +12,15 @@ class ProductManager {
     }
 
     public function getAll($sector = 'all') {
-        $sql = "SELECT id, title, origin, tag, tag_class, description, image_url, sector, vote_count, heritage_story, where_to_find, did_you_know
-                FROM products";
+        $sql = "SELECT p.id, p.title, p.origin, p.tag, p.tag_class, p.description, p.image_url, p.sector, p.vote_count, p.heritage_story, p.where_to_find, p.did_you_know, p.category_id, c.slug as category_slug
+                FROM products p
+                LEFT JOIN categories c ON p.category_id = c.id";
 
         if ($sector !== 'all') {
             if ($sector === 'popular') {
-                $sql .= " ORDER BY vote_count DESC";
+                $sql .= " ORDER BY p.vote_count DESC";
             } else {
-                $sql .= " WHERE sector = :sector";
+                $sql .= " WHERE c.slug = :sector";
             }
         }
 
@@ -31,9 +32,10 @@ class ProductManager {
 
     public function getFeatured($limit = 4) {
         $limit = (int)$limit;
-        $sql = "SELECT id, title, origin, tag, tag_class, description, image_url, sector, vote_count, heritage_story, where_to_find, did_you_know
-                FROM products 
-                ORDER BY vote_count DESC 
+        $sql = "SELECT p.id, p.title, p.origin, p.tag, p.tag_class, p.description, p.image_url, p.sector, p.vote_count, p.heritage_story, p.where_to_find, p.did_you_know, p.category_id, c.slug as category_slug
+                FROM products p
+                LEFT JOIN categories c ON p.category_id = c.id
+                ORDER BY p.vote_count DESC 
                 LIMIT {$limit}";
 
         $products = $this->db->fetchAll($sql, []);
@@ -49,7 +51,7 @@ class ProductManager {
     }
 
     public function add($data, $imageFile = null) {
-        $required = ['title', 'origin', 'tag', 'tag_class', 'sector', 'description'];
+        $required = ['title', 'origin', 'tag', 'tag_class', 'category_id', 'sector', 'description'];
         foreach ($required as $field) {
             if (empty($data[$field])) {
                 return ['success' => false, 'error' => 'All fields are required'];
@@ -67,13 +69,14 @@ class ProductManager {
 
         try {
             $this->db->execute(
-                "INSERT INTO products (title, origin, tag, tag_class, description, image_url, sector, vote_count, heritage_story, where_to_find, did_you_know) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)",
+                "INSERT INTO products (title, origin, tag, tag_class, category_id, description, image_url, sector, vote_count, heritage_story, where_to_find, did_you_know) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)",
                 [
                     $data['title'],
                     $data['origin'],
                     $data['tag'],
                     $data['tag_class'],
+                    $data['category_id'],
                     $data['description'],
                     $imageUrl,
                     $data['sector'],
@@ -90,7 +93,7 @@ class ProductManager {
     }
 
     public function update($id, $data, $imageFile = null) {
-        $required = ['title', 'origin', 'tag', 'tag_class', 'sector', 'description'];
+        $required = ['title', 'origin', 'tag', 'tag_class', 'category_id', 'sector', 'description'];
         foreach ($required as $field) {
             if (empty($data[$field])) {
                 return ['success' => false, 'error' => 'All fields are required'];
@@ -118,12 +121,13 @@ class ProductManager {
             }
 
             $this->db->execute(
-                "UPDATE products SET title = ?, origin = ?, tag = ?, tag_class = ?, description = ?, image_url = ?, sector = ?, heritage_story = ?, where_to_find = ?, did_you_know = ? WHERE id = ?",
+                "UPDATE products SET title = ?, origin = ?, tag = ?, tag_class = ?, category_id = ?, description = ?, image_url = ?, sector = ?, heritage_story = ?, where_to_find = ?, did_you_know = ? WHERE id = ?",
                 [
                     $data['title'],
                     $data['origin'],
                     $data['tag'],
                     $data['tag_class'],
+                    $data['category_id'],
                     $data['description'],
                     $imageUrl,
                     $data['sector'],

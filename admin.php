@@ -4,6 +4,7 @@ require_once 'config.php';
 
 require_once __DIR__ . '/classes/Admin.php';
 require_once __DIR__ . '/classes/ProductManager.php';
+require_once __DIR__ . '/classes/CategoryManager.php';
 
 session_start();
 
@@ -12,6 +13,7 @@ $action = $_GET['action'] ?? '';
 // Initialize classes (Encapsulation)
 $admin = new Admin($db);
 $productManager = new ProductManager($db);
+$categoryManager = new CategoryManager($db);
 
 switch($action) {
     case 'admin_login':
@@ -39,6 +41,7 @@ switch($action) {
             'origin' => $_POST['origin'] ?? '',
             'tag' => $_POST['tag'] ?? '',
             'tag_class' => $_POST['tag_class'] ?? '',
+            'category_id' => $_POST['category_id'] ?? '',
             'sector' => $_POST['sector'] ?? '',
             'description' => $_POST['description'] ?? '',
             'heritage_story' => $_POST['heritage_story'] ?? '',
@@ -57,6 +60,7 @@ switch($action) {
             'origin' => $_POST['origin'] ?? '',
             'tag' => $_POST['tag'] ?? '',
             'tag_class' => $_POST['tag_class'] ?? '',
+            'category_id' => $_POST['category_id'] ?? '',
             'sector' => $_POST['sector'] ?? '',
             'description' => $_POST['description'] ?? '',
             'heritage_story' => $_POST['heritage_story'] ?? '',
@@ -71,6 +75,30 @@ switch($action) {
         $admin->requireLogin();
         $id = $_POST['id'] ?? 0;
         $result = $productManager->delete($id);
+        echo json_encode($result);
+        break;
+    case 'get_categories':
+        $admin->requireLogin();
+        $categories = $categoryManager->getAll();
+        echo json_encode($categories);
+        break;
+    case 'add_category':
+        $admin->requireLogin();
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $categoryManager->add($data);
+        echo json_encode($result);
+        break;
+    case 'update_category':
+        $admin->requireLogin();
+        $id = $_POST['id'] ?? 0;
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $categoryManager->update($id, $data);
+        echo json_encode($result);
+        break;
+    case 'delete_category':
+        $admin->requireLogin();
+        $id = $_POST['id'] ?? 0;
+        $result = $categoryManager->delete($id);
         echo json_encode($result);
         break;
     default:

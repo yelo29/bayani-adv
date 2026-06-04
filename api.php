@@ -9,57 +9,65 @@ require_once __DIR__ . '/classes/CategoryManager.php';
 
 $action = $_GET['action'] ?? '';
 
-// Initialize classes (Encapsulation)
-$customer = new Customer($db);
-$productManager = new ProductManager($db);
-$categoryManager = new CategoryManager($db);
+try {
+    // Initialize Database with error handling
+    $db = new Database($host, $dbname, $username, $password);
 
-switch($action) {
-    case 'register':
-        $data = json_decode(file_get_contents('php://input'), true);
-        $result = $customer->register($data['email'] ?? '', $data['password'] ?? '');
-        echo json_encode($result);
-        break;
-    case 'login':
-        $data = json_decode(file_get_contents('php://input'), true);
-        $result = $customer->login($data['email'] ?? '', $data['password'] ?? '');
-        echo json_encode($result);
-        break;
-    case 'logout':
-        $result = $customer->logout();
-        echo json_encode($result);
-        break;
-    case 'check_auth':
-        $result = $customer->checkAuth();
-        echo json_encode($result);
-        break;
-    case 'get_products':
-        getProducts($productManager, $customer);
-        break;
-    case 'get_featured':
-        getFeaturedProducts($productManager, $customer);
-        break;
-    case 'get_product_details':
-        getProductDetails($productManager, $customer);
-        break;
-    case 'vote':
-        voteProduct($customer, $db);
-        break;
-    case 'check_vote':
-        checkVote($customer, $db);
-        break;
-    case 'get_categories':
-        $categories = $categoryManager->getAll();
-        echo json_encode($categories);
-        break;
-    default:
-        echo json_encode(['error' => 'Invalid action']);
+    // Initialize classes (Encapsulation)
+    $customer = new Customer($db);
+    $productManager = new ProductManager($db);
+    $categoryManager = new CategoryManager($db);
+
+    switch($action) {
+        case 'register':
+            $data = json_decode(file_get_contents('php://input'), true);
+            $result = $customer->register($data['email'] ?? '', $data['password'] ?? '');
+            echo json_encode($result);
+            break;
+        case 'login':
+            $data = json_decode(file_get_contents('php://input'), true);
+            $result = $customer->login($data['email'] ?? '', $data['password'] ?? '');
+            echo json_encode($result);
+            break;
+        case 'logout':
+            $result = $customer->logout();
+            echo json_encode($result);
+            break;
+        case 'check_auth':
+            $result = $customer->checkAuth();
+            echo json_encode($result);
+            break;
+        case 'get_products':
+            getProducts($productManager, $customer);
+            break;
+        case 'get_featured':
+            getFeaturedProducts($productManager, $customer);
+            break;
+        case 'get_product_details':
+            getProductDetails($productManager, $customer);
+            break;
+        case 'vote':
+            voteProduct($customer, $db);
+            break;
+        case 'check_vote':
+            checkVote($customer, $db);
+            break;
+        case 'get_categories':
+            $categories = $categoryManager->getAll();
+            echo json_encode($categories);
+            break;
+        default:
+            echo json_encode(['error' => 'Invalid action']);
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()]);
 }
 
 function getProducts($productManager, $customer) {
     global $db;
-    $sector = $_GET['sector'] ?? 'all';
-    $products = $productManager->getAll($sector);
+    $categorySlug = $_GET['sector'] ?? 'all';
+    $products = $productManager->getAll($categorySlug);
     
     $userId = $customer->getUserId();
     $vote = new Vote($db, $userId);

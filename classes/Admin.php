@@ -1,6 +1,7 @@
 <?php
 
 require_once 'User.php';
+require_once 'SessionManager.php';
 
 /**
  * Admin Class
@@ -8,11 +9,11 @@ require_once 'User.php';
  * Encapsulation: Manages admin authentication
  */
 class Admin extends User {
-    private $sessionKey = 'admin_id';
-    private $sessionEmailKey = 'admin_email';
+    private $sessionManager;
 
     public function __construct($db) {
         parent::__construct($db);
+        $this->sessionManager = new SessionManager();
         $this->loadFromSession();
     }
 
@@ -33,8 +34,8 @@ class Admin extends User {
 
             // Note: Using plain text comparison for now (should use password_verify in production)
             if ($admin && $password === $admin['password']) {
-                $_SESSION[$this->sessionKey] = $admin['id'];
-                $_SESSION[$this->sessionEmailKey] = $admin['email'];
+                $this->sessionManager->setAdminId($admin['id']);
+                $_SESSION['admin_email'] = $admin['email'];
                 $this->id = $admin['id'];
                 $this->email = $admin['email'];
                 return ['success' => true, 'message' => 'Login successful'];
@@ -53,29 +54,21 @@ class Admin extends User {
 
     public function checkAuth() {
         return [
-            'logged_in' => $this->isLoggedIn(),
-            'admin_email' => $_SESSION[$this->sessionEmailKey] ?? null
+            'logged_in' => $this->sessionManager->isAdminLoggedIn(),
+            'admin_email' => $_SESSION['admin_email'] ?? null
         ];
     }
 
     private function loadFromSession() {
-        $this->id = $_SESSION[$this->sessionKey] ?? null;
-        $this->email = $_SESSION[$this->sessionEmailKey] ?? null;
-    }
-
-    private function isLoggedIn() {
-        return isset($_SESSION[$this->sessionKey]);
+        $this->id = $this->sessionManager->getAdminId();
+        $this->email = $_SESSION['admin_email'] ?? null;
     }
 
     public function requireLogin() {
-        if (!$this->isLoggedIn()) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Authentication required']);
-            exit;
-        }
+        $this->sessionManager->requireAdminLogin();
     }
 
     public function getAdminId() {
-        return $this->id;
+        return $this->sessionManager->getAdminId();
     }
 }

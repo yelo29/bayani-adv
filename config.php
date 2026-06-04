@@ -2,34 +2,15 @@
 session_start();
 
 require_once __DIR__ . '/classes/Database.php';
+require_once __DIR__ . '/classes/SessionManager.php';
 
-$host = 'host';
-$dbname = 'database_name';
-$username = 'root';
-$password = '';
+$host = 'sql113.infinityfree.com';
+$dbname = 'if0_42059838_gawang_pinas';
+$username = 'if0_42059838';
+$password = 'warframeyareli';
 
-// Initialize Database class (Encapsulation)
-$db = new Database($host, $dbname, $username, $password);
+// Initialize SessionManager class (Encapsulation)
+$session = new SessionManager();
 
-// Get PDO connection for backward compatibility
-$pdo = $db->getConnection();
-
-// Get current user ID from session
-function getUserId() {
-    return $_SESSION['user_id'] ?? null;
-}
-
-// Check if user is logged in
-function isLoggedIn() {
-    return isset($_SESSION['user_id']);
-}
-
-// Require login - returns error if not logged in
-function requireLogin() {
-    if (!isLoggedIn()) {
-        http_response_code(401);
-        echo json_encode(['error' => 'Authentication required']);
-        exit;
-    }
-}
+// Database will be initialized in API files with proper error handling
 ?>

@@ -11,20 +11,20 @@ class ProductManager {
         $this->db = $db;
     }
 
-    public function getAll($sector = 'all') {
+    public function getAll($categorySlug = 'all') {
         $sql = "SELECT p.id, p.title, p.origin, p.tag, p.tag_class, p.description, p.image_url, p.sector, p.vote_count, p.heritage_story, p.where_to_find, p.did_you_know, p.category_id, c.slug as category_slug
                 FROM products p
                 LEFT JOIN categories c ON p.category_id = c.id";
 
-        if ($sector !== 'all') {
-            if ($sector === 'popular') {
+        if ($categorySlug !== 'all') {
+            if ($categorySlug === 'popular') {
                 $sql .= " ORDER BY p.vote_count DESC";
             } else {
-                $sql .= " WHERE c.slug = :sector";
+                $sql .= " WHERE c.slug = :categorySlug";
             }
         }
 
-        $params = ($sector !== 'all' && $sector !== 'popular') ? [':sector' => $sector] : [];
+        $params = ($categorySlug !== 'all' && $categorySlug !== 'popular') ? [':categorySlug' => $categorySlug] : [];
         $products = $this->db->fetchAll($sql, $params);
 
         return $products;

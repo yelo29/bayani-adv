@@ -1,6 +1,7 @@
 <?php
 
 require_once 'User.php';
+require_once 'SessionManager.php';
 
 /**
  * Customer Class
@@ -8,11 +9,11 @@ require_once 'User.php';
  * Encapsulation: Manages customer authentication
  */
 class Customer extends User {
-    private $sessionKey = 'user_id';
-    private $sessionEmailKey = 'user_email';
+    private $sessionManager;
 
     public function __construct($db) {
         parent::__construct($db);
+        $this->sessionManager = new SessionManager();
         $this->loadFromSession();
     }
 
@@ -36,8 +37,8 @@ class Customer extends User {
             );
 
             if ($user && password_verify($password, $user['password'])) {
-                $_SESSION[$this->sessionKey] = $user['id'];
-                $_SESSION[$this->sessionEmailKey] = $user['email'];
+                $this->sessionManager->setUserId($user['id']);
+                $_SESSION['user_email'] = $user['email'];
                 $this->id = $user['id'];
                 $this->email = $user['email'];
                 return ['success' => true, 'message' => 'Login successful'];
@@ -56,8 +57,8 @@ class Customer extends User {
 
     public function checkAuth() {
         return [
-            'logged_in' => $this->isLoggedIn(),
-            'user_email' => $_SESSION[$this->sessionEmailKey] ?? null
+            'logged_in' => $this->sessionManager->isCustomerLoggedIn(),
+            'user_email' => $_SESSION['user_email'] ?? null
         ];
     }
 
@@ -97,23 +98,15 @@ class Customer extends User {
     }
 
     private function loadFromSession() {
-        $this->id = $_SESSION[$this->sessionKey] ?? null;
-        $this->email = $_SESSION[$this->sessionEmailKey] ?? null;
-    }
-
-    private function isLoggedIn() {
-        return isset($_SESSION[$this->sessionKey]);
+        $this->id = $this->sessionManager->getUserId();
+        $this->email = $_SESSION['user_email'] ?? null;
     }
 
     public function requireLogin() {
-        if (!$this->isLoggedIn()) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Authentication required']);
-            exit;
-        }
+        $this->sessionManager->requireLogin();
     }
 
     public function getUserId() {
-        return $this->id;
+        return $this->sessionManager->getUserId();
     }
 }
